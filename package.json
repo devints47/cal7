@@ -1,0 +1,102 @@
+{
+  "name": "cal7",
+  "version": "1.0.0",
+  "description": "A zero-configuration React calendar component for Google Calendar events",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./route": {
+      "import": "./dist/route.esm.js",
+      "require": "./dist/route.js",
+      "types": "./dist/route.d.ts"
+    },
+    "./styles": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "build:watch": "rollup -c --watch",
+    "dev": "rollup -c --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'Linting will be configured in a later task'",
+    "lint:fix": "echo 'Linting will be configured in a later task'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "size": "rollup -c --bundleAnalyzer"
+  },
+  "keywords": [
+    "react",
+    "calendar",
+    "google-calendar",
+    "events",
+    "component",
+    "typescript",
+    "nextjs"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cal7.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/cal7/issues"
+  },
+  "homepage": "https://github.com/yourusername/cal7#readme",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "next": ">=13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@eslint/js": "^8.57.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "postcss": "^8.4.41",
+    "rollup": "^4.21.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "typescript": "^5.5.4",
+    "vitest": "^3.2.4",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/jest-dom": "^6.4.8",
+    "jsdom": "^24.1.1",
+    "tslib": "^2.7.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.0.7",
+    "focus-trap": "^7.5.4",
+    "zod": "^3.22.4"
+  }
+}
