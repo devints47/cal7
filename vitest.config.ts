@@ -1,10 +1,14 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'path';
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
     globals: true,
+    environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['node_modules/', 'dist/', 'examples/', 'docs/', 'noveltea/'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -12,14 +16,17 @@ export default defineConfig({
         'node_modules/',
         'dist/',
         'examples/',
-        '**/*.test.{ts,tsx}',
-        '**/*.config.{ts,js}',
-      ],
-    },
+        'docs/',
+        'noveltea/',
+        '**/*.config.{js,ts}',
+        '**/*.d.ts',
+        'vitest.setup.ts'
+      ]
+    }
   },
   resolve: {
     alias: {
-      '@': new URL('./src', import.meta.url).pathname,
-    },
-  },
+      '@': resolve(__dirname, './src')
+    }
+  }
 });

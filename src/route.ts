@@ -1,2 +1,2 @@
-// Optional API route helper for non-Next.js frameworks
+// Optional API route helper for manual integration
 export { createCalendarRoute } from './utils/route-helper';

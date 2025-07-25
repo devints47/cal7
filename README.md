@@ -10,15 +10,11 @@ npm install cal7
 
 ## Quick Start
 
-1. Set your Google Calendar API key as an environment variable:
-```bash
-GOOGLE_CALENDAR_API_KEY=your_api_key_here
-```
-
-2. Import and use the Calendar component:
 ```tsx
 import { Calendar } from 'cal7';
 import 'cal7/styles';
+
+// Set environment variable: GOOGLE_CALENDAR_API_KEY=your_api_key
 
 export default function MyApp() {
   return (
@@ -29,11 +25,7 @@ export default function MyApp() {
 
 ## Documentation
 
-See the [docs](./docs) folder for detailed documentation.
-
-## Examples
-
-Check out the [examples](./examples) folder for usage examples.
+Full documentation is coming soon. This package is currently under development.
 
 ## License
 

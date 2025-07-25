@@ -28,6 +28,11 @@ Thumbs.db
 
 # Coverage
 coverage/
+.nyc_output/
+
+# Testing
+test-results/
+playwright-report/
 
 # Logs
 logs
