@@ -44,3 +44,9 @@ pids
 
 # Optional eslint cache
 .eslintcache
+
+# Submodules (to avoid disrupting main repo)
+noveltea/
+
+# Kiro
+.kiro/

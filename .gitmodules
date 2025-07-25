@@ -1,0 +1,3 @@
+[submodule "noveltea"]
+	path = noveltea
+	url = git@github.com:Bloom-Solutions-FL/noveltea.git
