@@ -37,6 +37,7 @@ noveltea/
 ## Core Architecture Patterns
 
 ### 1. Service Layer Pattern
+
 - **Google Calendar Service** (`lib/google-calendar-service.ts`)
   - Centralized API integration with error handling
   - Built-in caching mechanism (15-minute cache)
@@ -44,15 +45,19 @@ noveltea/
   - Data transformation from Google Calendar API to internal format
 
 ### 2. Component Composition Pattern
+
 - **Modular Components**: Each UI element is a separate, focused component
 - **Props-based Configuration**: Components accept configuration through props
 - **Event-driven Communication**: Parent-child communication through callback props
 
 ### 3. Error Boundary Pattern
+
 - **Hierarchical Error Handling**: Different error boundaries for different contexts
 - **Graceful Degradation**: Fallback UI when components fail
 - **Development vs Production**: Different error displays based on environment
+
 ## Typ
+
 eScript Interfaces and Types
 
 ### Core Data Models
@@ -150,7 +155,7 @@ interface EventModalProps {
 
 ### Device Detection Types
 
-```typescript
+````typescript
 type DeviceType = "ios" | "android" | "desktop" | "unknown";
 
 interface DeviceInfo {
@@ -187,11 +192,11 @@ The Google Calendar integration follows a layered service pattern:
 // Raw Google Calendar Event → Internal CalendarEvent
 function transformGoogleCalendarEvent(googleEvent: any): CalendarEvent {
   const isAllDay = !googleEvent.start.dateTime;
-  
+
   // Handle timezone-aware date parsing
   let startDate: Date;
   let endDate: Date;
-  
+
   if (isAllDay) {
     // All-day events: Parse date strings in local timezone
     const [startYear, startMonth, startDay] = startDateStr.split('-').map(Number);
@@ -200,7 +205,7 @@ function transformGoogleCalendarEvent(googleEvent: any): CalendarEvent {
     // Timed events: Use dateTime directly
     startDate = new Date(googleEvent.start.dateTime);
   }
-  
+
   return {
     id: googleEvent.id,
     title: googleEvent.summary || "Untitled Event",
@@ -216,20 +221,26 @@ function transformGoogleCalendarEvent(googleEvent: any): CalendarEvent {
     icalUrl: `https://calendar.google.com/calendar/ical/${CALENDAR_ID}/public/basic.ics`,
   };
 }
-```
+````
 
 #### Caching Strategy
+
 - **Server-side caching**: 15-minute cache in service layer
 - **Client-side caching**: 1-hour cache using simple-cache utility
 - **Cache invalidation**: Manual refresh capability
 - **Fallback mechanism**: Return cached data on API failures
 
 #### Error Handling
+
 ```typescript
 class GoogleCalendarServiceError extends Error {
   constructor(
     message: string,
-    public code: "NETWORK_ERROR" | "AUTH_ERROR" | "INVALID_DATA" | "UNKNOWN_ERROR",
+    public code:
+      | "NETWORK_ERROR"
+      | "AUTH_ERROR"
+      | "INVALID_DATA"
+      | "UNKNOWN_ERROR",
     public originalError?: Error
   ) {
     super(message);
@@ -239,24 +250,28 @@ class GoogleCalendarServiceError extends Error {
 ```
 
 ### API Configuration
+
 - **Date Range**: 6 months past to 6 months future
 - **Event Expansion**: `singleEvents=true` for recurring events
 - **Sorting**: Events ordered by start time
 - **Limits**: 1000 events maximum per request## UI Com
-ponents and Patterns
+  ponents and Patterns
 
 ### Component Architecture
 
 #### 1. CalendarView Component
+
 **Purpose**: Main calendar grid displaying weekly events
 
 **Key Features**:
+
 - Responsive design (mobile-first approach)
 - Week-based navigation with keyboard support
 - Loading states and error handling
 - Accessibility features (ARIA labels, keyboard navigation)
 
 **Responsive Patterns**:
+
 ```typescript
 // Mobile: Stacked day layout with headers
 <div className="md:hidden mb-4 pb-2 border-b border-gray-200">
@@ -277,21 +292,26 @@ ponents and Patterns
 ```
 
 #### 2. EventCard Component
+
 **Purpose**: Individual event display with two variants
 
 **Variants**:
+
 - **Compact**: For calendar grid cells
 - **Full**: For detailed event listings
 
 **Interaction Patterns**:
+
 - Click and keyboard navigation support
 - Hover effects and transitions
 - Truncation for long content
 
 #### 3. EventModal Component
+
 **Purpose**: Full event details in modal overlay
 
 **Features**:
+
 - Focus management and keyboard navigation
 - Backdrop click to close
 - Device-specific calendar integration
@@ -300,17 +320,20 @@ ponents and Patterns
 ### Design System Patterns
 
 #### Color Scheme
+
 - **Primary**: Orange to amber gradients (`from-orange-500 to-amber-500`)
 - **Backgrounds**: Subtle gradients (`from-orange-50 to-amber-50`)
 - **Text**: Stone color palette for readability
 - **States**: Color-coded feedback (red for errors, green for success)
 
 #### Typography
+
 - **Font Family**: Playfair Display serif font for elegance
 - **Hierarchy**: Consistent sizing scale (text-sm to text-5xl)
 - **Weight**: Strategic use of font weights for emphasis
 
 #### Animation and Transitions
+
 ```css
 /* Consistent transition timing */
 transition-all duration-300
@@ -323,21 +346,25 @@ animate-spin
 ```
 
 #### Spacing and Layout
+
 - **Container**: `max-w-6xl mx-auto px-6` for consistent page width
 - **Grid**: CSS Grid for calendar layout
 - **Flexbox**: For component internal layouts
 - **Responsive**: Mobile-first breakpoints#
+
 # Accessibility Features
 
 ### Keyboard Navigation
+
 - **Calendar Grid**: Arrow key navigation between days and events
 - **Focus Management**: Proper focus indicators and tab order
 - **Keyboard Shortcuts**: Enter/Space for event selection, Escape for modal close
 
 ### ARIA Implementation
+
 ```typescript
 // Calendar grid with proper roles
-<div 
+<div
   role="grid"
   aria-labelledby="calendar-week-heading"
   aria-describedby="calendar-description"
@@ -361,11 +388,13 @@ animate-spin
 ```
 
 ### Screen Reader Support
+
 - **Live Regions**: `aria-live="polite"` for dynamic content updates
 - **Descriptive Labels**: Comprehensive aria-label attributes
 - **Status Messages**: Clear feedback for loading and error states
 
 ### Visual Accessibility
+
 - **Color Contrast**: Sufficient contrast ratios for text readability
 - **Focus Indicators**: Visible focus rings with `focus:ring-2 focus:ring-amber-500`
 - **Reduced Motion**: Respects user motion preferences
@@ -373,12 +402,15 @@ animate-spin
 ## Performance Optimizations
 
 ### Caching Strategy
+
 1. **Multi-level Caching**:
+
    - Server-side: 15-minute cache in Google Calendar service
    - Client-side: 1-hour cache using simple-cache utility
    - Browser: HTTP caching headers
 
 2. **Cache Implementation**:
+
 ```typescript
 class SimpleCache {
   private cache = new Map<string, CacheEntry>();
@@ -396,65 +428,78 @@ class SimpleCache {
 ```
 
 ### Loading Optimizations
+
 - **Skeleton Loading**: Detailed loading states that match final content structure
 - **Progressive Enhancement**: Core functionality works without JavaScript
 - **Lazy Loading**: Components load as needed
 
 ### Bundle Optimization
+
 - **Tree Shaking**: Only import used utilities from libraries
 - **Code Splitting**: Separate chunks for different features
 - **Dynamic Imports**: Load heavy components on demand
 
 ### Data Fetching Patterns
+
 - **SWR Pattern**: Stale-while-revalidate for fresh data
 - **Error Recovery**: Graceful fallbacks when API fails
 - **Optimistic Updates**: Immediate UI feedback## T
-esting Patterns
+  esting Patterns
 
 ### Testing Architecture
+
 - **Framework**: Vitest for unit testing
 - **React Testing**: React Testing Library for component tests
 - **Mocking Strategy**: Comprehensive mocking of external dependencies
 
 ### API Testing Patterns
+
 ```typescript
 // Mock external services
-vi.mock('@/lib/google-calendar-service', () => ({
+vi.mock("@/lib/google-calendar-service", () => ({
   getGoogleCalendarEvents: vi.fn(),
   GoogleCalendarServiceError: class MockGoogleCalendarServiceError extends Error {
     constructor(message: string, public code: string) {
       super(message);
-      this.name = 'GoogleCalendarServiceError';
+      this.name = "GoogleCalendarServiceError";
     }
   },
 }));
 
 // Test error scenarios
-it('handles GoogleCalendarServiceError with AUTH_ERROR', async () => {
-  const authError = new GoogleCalendarServiceError('Authentication failed', 'AUTH_ERROR');
+it("handles GoogleCalendarServiceError with AUTH_ERROR", async () => {
+  const authError = new GoogleCalendarServiceError(
+    "Authentication failed",
+    "AUTH_ERROR"
+  );
   mockGetGoogleCalendarEvents.mockRejectedValue(authError);
-  
+
   const response = await GET(request);
   expect(response.status).toBe(401);
 });
 ```
 
 ### Component Testing Patterns
+
 ```typescript
 // Mock utility functions
-vi.mock('@/lib/calendar-utils', () => ({
+vi.mock("@/lib/calendar-utils", () => ({
   getCurrentWeek: vi.fn(() => mockWeekData),
-  groupEventsByDay: vi.fn((events, weekData) => ({ ...weekData, days: mockDays })),
+  groupEventsByDay: vi.fn((events, weekData) => ({
+    ...weekData,
+    days: mockDays,
+  })),
 }));
 
 // Test component behavior
-it('renders calendar with days of the week', () => {
+it("renders calendar with days of the week", () => {
   render(<CalendarView {...mockProps} />);
-  expect(screen.getByText('Sunday')).toBeInTheDocument();
+  expect(screen.getByText("Sunday")).toBeInTheDocument();
 });
 ```
 
 ### Utility Testing Patterns
+
 - **Date Utilities**: Comprehensive testing of date manipulation functions
 - **Device Detection**: Testing across different user agent strings
 - **Data Transformation**: Testing Google Calendar API response transformation
@@ -462,6 +507,7 @@ it('renders calendar with days of the week', () => {
 ## Reusable Utilities and Patterns
 
 ### Date and Time Utilities
+
 ```typescript
 // Week-based calendar operations
 export function getWeekStart(date: Date): Date;
@@ -477,11 +523,18 @@ export function formatDate(date: Date): string;
 export function calculateDuration(startDate: Date, endDate: Date): string;
 
 // Event filtering and grouping
-export function filterEventsForWeek(events: CalendarEvent[], weekStart: Date): CalendarEvent[];
-export function groupEventsByDay(events: CalendarEvent[], weekData: WeekData): WeekData;
+export function filterEventsForWeek(
+  events: CalendarEvent[],
+  weekStart: Date
+): CalendarEvent[];
+export function groupEventsByDay(
+  events: CalendarEvent[],
+  weekData: WeekData
+): WeekData;
 ```
 
 ### Device Detection Utilities
+
 ```typescript
 export function detectDeviceType(userAgent?: string): DeviceType;
 export function isTouchDevice(): boolean;
@@ -492,13 +545,15 @@ export function getCalendarAppName(userAgent?: string): string;
 ```
 
 ### Validation Utilities
+
 ```typescript
 export function isValidDate(date: Date): boolean;
 export function isValidCalendarEvent(event: any): event is CalendarEvent;
 ```
 
 ### Error Handling Patterns
-```typescript
+
+````typescript
 // Custom error classes with specific error codes
 class GoogleCalendarServiceError extends Error {
   constructor(
@@ -549,9 +604,10 @@ const generateICalContent = (event: CalendarEvent): string => {
     "END:VCALENDAR",
   ].join("\r\n");
 };
-```
+````
 
 ### Platform-Specific Behaviors
+
 - **iOS**: Downloads .ics file that opens in Apple Calendar
 - **Android**: Opens Google Calendar web interface
 - **Desktop**: Dropdown with multiple options (Google Calendar, iCal download)
@@ -559,6 +615,7 @@ const generateICalContent = (event: CalendarEvent): string => {
 ## Recommendations for Cal7 Package
 
 ### Core Components to Extract
+
 1. **CalendarView**: Main calendar grid component with week navigation
 2. **EventCard**: Flexible event display component (compact/full variants)
 3. **EventModal**: Event details modal with accessibility features
@@ -567,6 +624,7 @@ const generateICalContent = (event: CalendarEvent): string => {
 6. **ErrorStates**: Error handling and display components
 
 ### Utility Functions to Package
+
 1. **Date/Time Utilities**: Week-based calendar operations
 2. **Device Detection**: Platform-specific behavior handling
 3. **Data Transformation**: Google Calendar API response processing
@@ -574,6 +632,7 @@ const generateICalContent = (event: CalendarEvent): string => {
 5. **Caching**: Simple client-side cache implementation
 
 ### Configuration Patterns
+
 ```typescript
 // Package configuration interface
 interface Cal7Config {
@@ -595,6 +654,7 @@ interface Cal7Config {
 ```
 
 ### API Design Recommendations
+
 1. **Flexible Data Sources**: Support multiple calendar providers
 2. **Customizable Theming**: CSS custom properties for easy styling
 3. **Accessibility First**: Built-in ARIA support and keyboard navigation
@@ -604,6 +664,7 @@ interface Cal7Config {
 ## Conclusion
 
 The original NovelTea calendar implementation demonstrates excellent patterns for:
+
 - **Modular Architecture**: Well-separated concerns with clear interfaces
 - **Accessibility**: Comprehensive ARIA implementation and keyboard support
 - **Performance**: Multi-level caching and optimized loading states

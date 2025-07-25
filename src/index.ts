@@ -60,5 +60,11 @@ export type {
 export { CalendarError } from './types/utils';
 
 // Utility exports
-export { fetchCalendarEvents } from './utils/api';
-export { sanitizeEventContent } from './utils/security';
+export {
+  fetchCalendarEvents,
+  transformGoogleCalendarEvent,
+  validateCalendarId,
+  validateApiKey,
+  filterEventsForWeek,
+  groupEventsByDay
+} from './utils/google-calendar-api';
