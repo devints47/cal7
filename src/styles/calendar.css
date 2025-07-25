@@ -1,0 +1,143 @@
+/* Cal7 Calendar Component Styles */
+
+/* Error States */
+.cal7-error {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.cal7-error--missing-api-key {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.cal7-error--invalid-calendar-id {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.cal7-error--auth-error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.cal7-error--permission-error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.cal7-error--network-error {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.cal7-error__content {
+  max-width: 42rem;
+}
+
+.cal7-error__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.cal7-error__message {
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.cal7-error__example {
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+}
+
+.cal7-error__help {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cal7-error__help p {
+  margin: 0 0 0.5rem 0;
+}
+
+.cal7-error__help ol {
+  margin: 0.5rem 0 1rem 1.5rem;
+  padding: 0;
+}
+
+.cal7-error__help li {
+  margin: 0.25rem 0;
+}
+
+.cal7-error__link {
+  display: inline-block;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.cal7-error__link:hover {
+  text-decoration: underline;
+}
+
+.cal7-error__debug {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cal7-error__debug summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.cal7-error__debug-info {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.75rem;
+  color: #374151;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Code elements */
+.cal7-error code {
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+  color: #374151;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .cal7-error {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .cal7-error__title {
+    font-size: 1rem;
+  }
+  
+  .cal7-error__message,
+  .cal7-error__help {
+    font-size: 0.875rem;
+  }
+}

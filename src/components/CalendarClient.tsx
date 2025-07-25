@@ -1,6 +1,129 @@
-import type { CalendarClientProps } from '../types/calendar';
+'use client';
 
-// Placeholder CalendarClient component - will be implemented in later tasks
-export function CalendarClient(_props: CalendarClientProps) {
-  return <div>CalendarClient component placeholder</div>;
+import { useState, useMemo } from 'react';
+import '../styles/calendar.css';
+import '../styles/calendar-grid.css';
+import type { CalendarClientProps } from '../types/calendar';
+import type { CalendarEvent, WeekData } from '../types/events';
+import { 
+  getCurrentWeek, 
+  getNextWeek, 
+  getPreviousWeek, 
+  populateWeekWithEvents,
+  getWeekRangeString
+} from '../utils/date-utils';
+import { filterEventsForWeek } from '../utils/google-calendar-api';
+import { WeekNavigation } from './WeekNavigation';
+import { CalendarGrid } from './CalendarGrid';
+import { EventModal } from './EventModal';
+
+/**
+ * CalendarClient Component
+ * 
+ * Client-side calendar component that handles user interactions and state management.
+ * Manages week navigation, event selection, and modal display with keyboard navigation.
+ * Implements responsive layout logic for different screen sizes.
+ */
+export function CalendarClient({
+  events,
+  initialWeek,
+  className = '',
+  theme,
+  locale = 'en-US',
+  timeZone = 'UTC',
+  onEventClick,
+}: CalendarClientProps) {
+  // State management
+  const [currentWeek, setCurrentWeek] = useState<Date>(
+    initialWeek ? new Date(initialWeek) : new Date()
+  );
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Get current week data structure
+  const weekData = useMemo(() => getCurrentWeek(currentWeek), [currentWeek]);
+  
+  // Filter events for current week
+  const weekEvents = useMemo(() => 
+    filterEventsForWeek(events, weekData.startDate), 
+    [events, weekData.startDate]
+  );
+  
+  // Populate week with events
+  const weekWithEvents = useMemo(() => 
+    populateWeekWithEvents(weekData, weekEvents), 
+    [weekData, weekEvents]
+  );
+
+  // Navigation handlers
+  const handlePreviousWeek = () => {
+    setCurrentWeek(prev => getPreviousWeek(prev));
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeek(prev => getNextWeek(prev));
+  };
+
+  const handleWeekChange = (newWeek: Date) => {
+    setCurrentWeek(newWeek);
+  };
+
+  // Event interaction handlers
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+    
+    // Call optional external handler
+    if (onEventClick) {
+      onEventClick(event);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
+
+  // Generate week range string for accessibility
+  const weekRangeString = getWeekRangeString(weekData.startDate, locale);
+
+  return (
+    <div 
+      className={`cal7-calendar ${className}`}
+      role="application"
+      aria-label={`Calendar for week of ${weekRangeString}`}
+    >
+      {/* Week Navigation */}
+      <WeekNavigation
+        currentWeek={currentWeek}
+        onWeekChange={handleWeekChange}
+        onPreviousWeek={handlePreviousWeek}
+        onNextWeek={handleNextWeek}
+        weekRangeString={weekRangeString}
+        className="cal7-calendar__navigation"
+        theme={theme}
+        locale={locale}
+      />
+
+      {/* Calendar Grid */}
+      <CalendarGrid
+        weekData={weekWithEvents}
+        onEventClick={handleEventClick}
+        className="cal7-calendar__grid"
+        theme={theme}
+        locale={locale}
+        timeZone={timeZone}
+      />
+
+      {/* Event Modal */}
+      <EventModal
+        event={selectedEvent}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        timeZone={timeZone}
+        locale={locale}
+        showAddToCalendar={true}
+      />
+    </div>
+  );
 }

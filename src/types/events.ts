@@ -59,6 +59,12 @@ export interface GoogleCalendarEvent {
   };
   location?: string;
   htmlLink: string;
+  status?: 'confirmed' | 'tentative' | 'cancelled';
+  attendees?: Array<{
+    email: string;
+    displayName?: string;
+    responseStatus?: 'accepted' | 'declined' | 'tentative' | 'needsAction';
+  }>;
 }
 
 export interface GoogleCalendarResponse {

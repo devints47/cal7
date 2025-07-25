@@ -55,3 +55,8 @@ noveltea/
 
 # Kiro
 .kiro/
+
+# Test server (temporary development - not part of package)
+test-server/
+TEST_SERVER_*.md
+start-test-server.sh

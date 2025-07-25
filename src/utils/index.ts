@@ -8,7 +8,24 @@ export {
   groupEventsByDay
 } from './google-calendar-api';
 
+// Export date utilities
+export {
+  getWeekStart,
+  getWeekEnd,
+  getCurrentWeek,
+  getNextWeek,
+  getPreviousWeek,
+  isSameDay,
+  formatTime,
+  formatDate,
+  formatDateShort,
+  calculateDuration,
+  populateWeekWithEvents,
+  isValidDate,
+  getWeekNumber,
+  getWeekRangeString
+} from './date-utils';
+
 // Export other utility functions (to be added in future tasks)
-// export * from './date-utils';
 // export * from './device-detection';
 // export * from './cache';
