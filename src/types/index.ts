@@ -1,10 +1,5 @@
-// Main package exports
-export { Calendar } from './components/Calendar';
-export { CalendarClient } from './components/CalendarClient';
-export { EventModal } from './components/EventModal';
-
-// Core type exports
-export type { 
+// Re-export all types from individual modules
+export type {
   CalendarProps,
   CalendarClientProps,
   EventModalProps,
@@ -14,9 +9,9 @@ export type {
   WeekNavigationProps,
   DayColumnProps,
   LoadingStateProps
-} from './types/calendar';
+} from './calendar';
 
-export type { 
+export type {
   CalendarEvent,
   EventAttendee,
   RecurrenceRule,
@@ -27,9 +22,9 @@ export type {
   DeviceType,
   DeviceInfo,
   CalendarSubscription
-} from './types/events';
+} from './events';
 
-export type { CalendarTheme } from './types/theme';
+export type { CalendarTheme } from './theme';
 
 export type {
   CalendarErrorCode,
@@ -54,11 +49,7 @@ export type {
   AccessibilityConfig,
   PerformanceMetrics,
   LocaleConfig
-} from './types/utils';
+} from './utils';
 
-// Export CalendarError class
-export { CalendarError } from './types/utils';
-
-// Utility exports
-export { fetchCalendarEvents } from './utils/api';
-export { sanitizeEventContent } from './utils/security';
+// Export the CalendarError class (not as type)
+export { CalendarError } from './utils';

@@ -1,3 +1,4 @@
+// Core event data model
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -10,6 +11,8 @@ export interface CalendarEvent {
   attendees?: EventAttendee[];
   recurrence?: RecurrenceRule;
   status: 'confirmed' | 'tentative' | 'cancelled';
+  googleCalendarId?: string;
+  icalUrl?: string;
 }
 
 export interface EventAttendee {
@@ -23,4 +26,62 @@ export interface RecurrenceRule {
   interval?: number;
   until?: Date;
   count?: number;
+}
+
+// Week-based calendar structure
+export interface WeekData {
+  startDate: Date;
+  endDate: Date;
+  days: DayData[];
+}
+
+export interface DayData {
+  date: Date;
+  dayName: string;
+  events: CalendarEvent[];
+  isToday: boolean;
+}
+
+// Google Calendar API types
+export interface GoogleCalendarEvent {
+  id: string;
+  summary: string;
+  description?: string;
+  start: {
+    dateTime?: string;
+    date?: string;
+    timeZone?: string;
+  };
+  end: {
+    dateTime?: string;
+    date?: string;
+    timeZone?: string;
+  };
+  location?: string;
+  htmlLink: string;
+}
+
+export interface GoogleCalendarResponse {
+  items: GoogleCalendarEvent[];
+  nextPageToken?: string;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+// Device detection types
+export type DeviceType = "ios" | "android" | "desktop" | "unknown";
+
+export interface DeviceInfo {
+  type: DeviceType;
+  isTouch: boolean;
+  userAgent: string;
+}
+
+// Calendar subscription URLs
+export interface CalendarSubscription {
+  google: string;
+  ical: string;
+  apple: string;
 }
