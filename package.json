@@ -54,12 +54,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/cal7.git"
+    "url": "https://github.com/devints47/cal7.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/cal7/issues"
+    "url": "https://github.com/devints47/cal7/issues"
   },
-  "homepage": "https://github.com/yourusername/cal7#readme",
+  "homepage": "https://github.com/devints47/cal7#readme",
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
@@ -71,32 +71,31 @@
     }
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^26.0.1",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^12.1.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@rollup/plugin-terser": "^0.4.4",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@eslint/js": "^8.57.0",
-    "@vitest/coverage-v8": "^3.2.4",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "postcss": "^8.4.41",
-    "rollup": "^4.21.0",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "postcss": "^8.5.1",
+    "rollup": "^4.28.1",
     "rollup-plugin-postcss": "^4.0.2",
-    "typescript": "^5.5.4",
-    "vitest": "^3.2.4",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/jest-dom": "^6.4.8",
-    "jsdom": "^24.1.1",
-    "tslib": "^2.7.0"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "jsdom": "^25.0.1",
+    "tslib": "^2.8.1"
   },
   "dependencies": {
-    "dompurify": "^3.0.7",
-    "focus-trap": "^7.5.4",
-    "zod": "^3.22.4"
+    "dompurify": "^3.2.3",
+    "focus-trap": "^7.6.2",
+    "zod": "^3.24.1"
   }
 }
