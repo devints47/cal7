@@ -63,4 +63,5 @@ start-test-server.sh
 
 # Development documentation (not for publishing)
 ORIGINAL_IMPLEMENTATION_ANALYSIS.md
+PUBLISHING.md
 test-visual.html
