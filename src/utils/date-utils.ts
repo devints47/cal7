@@ -179,18 +179,18 @@ export function getWeekNumber(date: Date): number {
 }
 
 /**
- * Gets a human-readable week range string (e.g., "March 10 - 16, 2024")
+ * Gets a human-readable week range string (e.g., "Jul 20 - 26, 2025")
  */
 export function getWeekRangeString(weekStart: Date, locale: string = 'en-US'): string {
   const weekEnd = getWeekEnd(weekStart);
   
   // If same month
   if (weekStart.getMonth() === weekEnd.getMonth()) {
-    const monthYear = weekStart.toLocaleDateString(locale, { 
-      month: 'long', 
-      year: 'numeric' 
+    const month = weekStart.toLocaleDateString(locale, { 
+      month: 'short'
     });
-    return `${monthYear} ${weekStart.getDate()} - ${weekEnd.getDate()}`;
+    const year = weekStart.getFullYear();
+    return `${month} ${weekStart.getDate()} - ${weekEnd.getDate()}, ${year}`;
   } else {
     // Different months
     const startStr = weekStart.toLocaleDateString(locale, { 
@@ -204,4 +204,13 @@ export function getWeekRangeString(weekStart: Date, locale: string = 'en-US'): s
     });
     return `${startStr} - ${endStr}`;
   }
+}
+
+/**
+ * Checks if a given week start date is the current week
+ */
+export function isCurrentWeek(weekStart: Date): boolean {
+  const today = new Date();
+  const currentWeekStart = getWeekStart(today);
+  return weekStart.getTime() === currentWeekStart.getTime();
 }

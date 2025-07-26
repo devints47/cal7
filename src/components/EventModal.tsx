@@ -132,6 +132,35 @@ export function EventModal({
     }
   };
 
+  // Make emails and links clickable in text
+  const makeLinksClickable = (text: string): string => {
+    // Email regex
+    const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+    // URL regex
+    const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
+    
+    return text
+      .replace(emailRegex, '<a href="mailto:$1" style="color: #3b82f6; text-decoration: underline;">$1</a>')
+      .replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
+  };
+
+  // Open device-appropriate map app
+  const openMapApp = (address: string) => {
+    const encodedAddress = encodeURIComponent(address);
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+      // iOS - Apple Maps
+      window.open(`maps://maps.apple.com/?q=${encodedAddress}`, '_blank');
+    } else if (userAgent.includes('android')) {
+      // Android - Google Maps
+      window.open(`geo:0,0?q=${encodedAddress}`, '_blank');
+    } else {
+      // Desktop - Google Maps
+      window.open(`https://maps.google.com/maps?q=${encodedAddress}`, '_blank');
+    }
+  };
+
   // Get scrollbar width for body padding adjustment
   function getScrollbarWidth() {
     const outer = document.createElement('div');
@@ -273,7 +302,7 @@ export function EventModal({
         <div style={{ padding: '1.5rem' }}>
           {/* Event Details */}
           <div style={{ marginBottom: '1.5rem' }}>
-            {/* Date Information */}
+            {/* Date Information - Clickable with Add to Calendar */}
             <div
               style={{
                 display: 'flex',
@@ -296,9 +325,18 @@ export function EventModal({
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              <span style={{ fontWeight: '500' }}>
-                {formatEventDate(event.startTime)}
-              </span>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontWeight: '500' }}>
+                  {formatEventDate(event.startTime)}
+                </span>
+                <div style={{ marginTop: '0.25rem' }}>
+                  <AddToCalendarButton 
+                    event={event} 
+                    showLabel={false}
+                    className="cal7-modal-add-to-calendar"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Time Information */}
@@ -340,7 +378,7 @@ export function EventModal({
               </div>
             </div>
 
-            {/* Location */}
+            {/* Location - Clickable to open in map app */}
             {event.location && (
               <div
                 style={{
@@ -362,7 +400,30 @@ export function EventModal({
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
-                <span style={{ fontWeight: '500' }}>{event.location}</span>
+                <button
+                  onClick={() => openMapApp(event.location!)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#3b82f6',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    fontSize: 'inherit',
+                    fontFamily: 'inherit',
+                    padding: 0,
+                    textAlign: 'left',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#1d4ed8';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#3b82f6';
+                  }}
+                  title="Open in map application"
+                >
+                  {event.location}
+                </button>
               </div>
             )}
 
@@ -438,7 +499,7 @@ export function EventModal({
                   whiteSpace: 'pre-wrap',
                 }}
                 dangerouslySetInnerHTML={{
-                  __html: event.description.replace(/\n/g, '<br>'),
+                  __html: makeLinksClickable(event.description.replace(/\n/g, '<br>')),
                 }}
               />
             </div>

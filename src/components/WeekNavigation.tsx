@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { isCurrentWeek } from '../utils/date-utils';
 import type { CalendarTheme } from '../types/theme';
 
 interface WeekNavigationProps {
@@ -21,7 +22,7 @@ interface WeekNavigationProps {
  * Includes previous/next buttons and displays the current week range.
  */
 export function WeekNavigation({
-  currentWeek: _currentWeek,
+  currentWeek,
   onWeekChange,
   onPreviousWeek,
   onNextWeek,
@@ -30,6 +31,9 @@ export function WeekNavigation({
   theme: _theme,
   locale: _locale = 'en-US',
 }: WeekNavigationProps) {
+  
+  // Check if we're viewing the current week
+  const isViewingCurrentWeek = isCurrentWeek(currentWeek);
   
   // Keyboard navigation handler
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
@@ -61,6 +65,19 @@ export function WeekNavigation({
       aria-label="Week navigation"
       onKeyDown={handleKeyDown}
     >
+      {/* Week Range Display with Current Week Indicator */}
+      <div className="cal7-week-navigation__current">
+        <h2 className="cal7-week-navigation__title">
+          {weekRangeString}
+          {isViewingCurrentWeek && (
+            <span className="cal7-week-navigation__current-indicator">
+              Current Week
+            </span>
+          )}
+        </h2>
+      </div>
+
+      {/* Navigation Controls - Previous, Today, Next */}
       <div className="cal7-week-navigation__controls">
         {/* Previous Week Button */}
         <button
@@ -83,12 +100,16 @@ export function WeekNavigation({
           <span className="cal7-sr-only">Previous week</span>
         </button>
 
-        {/* Current Week Display */}
-        <div className="cal7-week-navigation__current">
-          <h2 className="cal7-week-navigation__title">
-            {weekRangeString}
-          </h2>
-        </div>
+        {/* Today Button */}
+        <button
+          type="button"
+          className="cal7-week-navigation__today"
+          onClick={handleTodayClick}
+          aria-label="Go to current week"
+          title="Go to current week (Home key)"
+        >
+          Today
+        </button>
 
         {/* Next Week Button */}
         <button
@@ -109,19 +130,6 @@ export function WeekNavigation({
             <path d="M5.5 3.5L10 8l-4.5 4.5L7 14l6-6-6-6-1.5 1.5z"/>
           </svg>
           <span className="cal7-sr-only">Next week</span>
-        </button>
-      </div>
-
-      {/* Today Button */}
-      <div className="cal7-week-navigation__actions">
-        <button
-          type="button"
-          className="cal7-week-navigation__today"
-          onClick={handleTodayClick}
-          aria-label="Go to current week"
-          title="Go to current week (Home key)"
-        >
-          Today
         </button>
       </div>
     </div>

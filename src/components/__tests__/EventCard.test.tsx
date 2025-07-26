@@ -78,7 +78,7 @@ describe('EventCard', () => {
       );
 
       expect(screen.getByText('Test Event')).toBeInTheDocument();
-      expect(screen.getByText(/2:30 PM - 4:00 PM/)).toBeInTheDocument();
+      expect(screen.getByText(/2:30 PM to 4:00 PM/)).toBeInTheDocument();
       expect(screen.getByText('Test Location')).toBeInTheDocument();
     });
 

@@ -27,6 +27,16 @@ export interface CalendarTheme {
     eventBackground?: string;
     eventBorder?: string;
     eventText?: string;
+    eventPastText?: string; // For greying out past events
+    
+    // Day alternating colors
+    dayEven?: string;
+    dayOdd?: string;
+    dayHover?: string;
+    
+    // Header alternating colors
+    headerEven?: string;
+    headerOdd?: string;
     
     // Status colors
     tentative?: string;
@@ -41,6 +51,7 @@ export interface CalendarTheme {
   // Typography
   typography?: {
     fontFamily?: string;
+    customFontUrl?: string; // Allow custom font URL
     fontSize?: {
       xs?: string;
       sm?: string;
@@ -88,6 +99,14 @@ export interface CalendarTheme {
     md?: string;
     lg?: string;
     xl?: string;
+    calendar?: string; // Drop shadow for entire calendar component
+  };
+  
+  // Event customization
+  event?: {
+    height?: string; // Customizable event height
+    width?: string; // Customizable event width
+    titleMinHeight?: string; // Minimum height for event titles
   };
   
   // Z-index values
@@ -144,6 +163,16 @@ export const defaultTheme: CalendarTheme = {
     eventBackground: '#ffffff',
     eventBorder: '#e5e7eb',
     eventText: '#111827',
+    eventPastText: '#9ca3af',
+    
+    // Day alternating colors
+    dayEven: '#fafafa',
+    dayOdd: '#ffffff',
+    dayHover: '#f8fafc',
+    
+    // Header alternating colors
+    headerEven: '#f3f4f6',
+    headerOdd: '#f9fafb',
     
     tentative: '#92400e',
     cancelled: '#dc2626',
@@ -200,6 +229,7 @@ export const defaultTheme: CalendarTheme = {
     md: '0 2px 4px rgba(0, 0, 0, 0.1)',
     lg: '0 4px 6px rgba(0, 0, 0, 0.1)',
     xl: '0 10px 15px rgba(0, 0, 0, 0.1)',
+    calendar: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
   },
   
   zIndex: {
@@ -212,6 +242,12 @@ export const defaultTheme: CalendarTheme = {
     fast: '0.15s ease-in-out',
     normal: '0.2s ease-in-out',
     slow: '0.3s ease-in-out',
+  },
+  
+  event: {
+    height: 'auto',
+    width: '100%',
+    titleMinHeight: '2.5rem', // Minimum 2 lines height
   },
 };
 
@@ -238,6 +274,16 @@ export const defaultDarkTheme: CalendarTheme = {
     eventBackground: '#1f2937',
     eventBorder: '#374151',
     eventText: '#f9fafb',
+    eventPastText: '#6b7280',
+    
+    // Day alternating colors
+    dayEven: '#1f2937',
+    dayOdd: '#111827',
+    dayHover: '#374151',
+    
+    // Header alternating colors
+    headerEven: '#374151',
+    headerOdd: '#1f2937',
     
     tentative: '#fbbf24',
     cancelled: '#f87171',
@@ -294,6 +340,7 @@ export const defaultDarkTheme: CalendarTheme = {
     md: '0 2px 4px rgba(0, 0, 0, 0.4)',
     lg: '0 4px 6px rgba(0, 0, 0, 0.4)',
     xl: '0 10px 15px rgba(0, 0, 0, 0.5)',
+    calendar: '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
   },
   
   zIndex: {
@@ -306,6 +353,12 @@ export const defaultDarkTheme: CalendarTheme = {
     fast: '0.15s ease-in-out',
     normal: '0.2s ease-in-out',
     slow: '0.3s ease-in-out',
+  },
+  
+  event: {
+    height: 'auto',
+    width: '100%',
+    titleMinHeight: '2.5rem', // Minimum 2 lines height
   },
 };
 
@@ -329,6 +382,7 @@ export function mergeTheme(baseTheme: CalendarTheme, customTheme?: Partial<Calen
     shadows: { ...baseTheme.shadows, ...customTheme.shadows },
     zIndex: { ...baseTheme.zIndex, ...customTheme.zIndex },
     transitions: { ...baseTheme.transitions, ...customTheme.transitions },
+    event: { ...baseTheme.event, ...customTheme.event },
   };
 }
 
@@ -416,6 +470,15 @@ export function generateCSSVariables(theme: CalendarTheme, prefix: string = 'cal
     Object.entries(theme.transitions).forEach(([key, value]) => {
       if (value) {
         variables[`--${prefix}-transition-${key}`] = value;
+      }
+    });
+  }
+  
+  // Event customization
+  if (theme.event) {
+    Object.entries(theme.event).forEach(([key, value]) => {
+      if (value) {
+        variables[`--${prefix}-event-${kebabCase(key)}`] = value;
       }
     });
   }

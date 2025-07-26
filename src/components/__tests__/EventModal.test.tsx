@@ -242,7 +242,7 @@ describe("EventModal", () => {
 
       const closeButton = screen.getByLabelText("Close event details modal");
       const actionCloseButton = screen.getByText("Close");
-      const calendarLink = screen.getByText("View in Google Calendar");
+      const calendarLink = screen.getByText("Add to Calendar");
 
       // Tab through elements
       await user.tab();

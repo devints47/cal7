@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import DOMPurify from 'dompurify';
 import type { 
   CalendarEvent, 
   GoogleCalendarEvent
@@ -10,29 +9,21 @@ import { CalendarError } from '../types/utils';
 const CALENDAR_ID = 'b382cfad3622bc528f1e748cc100b3abc92abfe801f983ca2a527357f7be7445@group.calendar.google.com';
 
 // Create a DOMPurify instance - handle both server and client environments
-const createPurify = () => {
+const createPurify = async () => {
   if (typeof window !== 'undefined') {
     // Browser environment
+    const DOMPurify = (await import('dompurify')).default;
     return DOMPurify(window);
   } else {
-    // Server environment - create a minimal window-like object for DOMPurify
-    const mockWindow = {
-      document: {
-        implementation: {
-          createHTMLDocument: () => ({
-            createElement: () => ({}),
-            createDocumentFragment: () => ({}),
-          }),
-        },
-        createElement: () => ({}),
-        createDocumentFragment: () => ({}),
-      },
-    };
-    return DOMPurify(mockWindow as unknown as Window & typeof globalThis);
+    // Server environment - use JSDOM to create a proper window object
+    const { JSDOM } = await import('jsdom');
+    const DOMPurify = (await import('dompurify')).default;
+    const window = new JSDOM('').window;
+    return DOMPurify(window as unknown as Window & typeof globalThis);
   }
 };
 
-const purify = createPurify();
+let purifyInstance: unknown = null;
 
 // Zod schemas for Google Calendar API response validation
 const GoogleCalendarEventSchema = z.object({
@@ -71,11 +62,16 @@ const GoogleCalendarResponseSchema = z.object({
 /**
  * Sanitizes HTML content to prevent XSS attacks
  */
-function sanitizeHtml(content: string | undefined): string {
+async function sanitizeHtml(content: string | undefined): Promise<string> {
   if (!content) return '';
   
+  // Get or create purify instance
+  if (!purifyInstance) {
+    purifyInstance = await createPurify();
+  }
+  
   // Allow only safe inline tags
-  return purify.sanitize(content, {
+  return purifyInstance.sanitize(content, {
     ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'br'],
     ALLOWED_ATTR: ['href', 'target'],
     ALLOW_DATA_ATTR: false,
@@ -85,9 +81,9 @@ function sanitizeHtml(content: string | undefined): string {
 /**
  * Transforms a Google Calendar event to our internal CalendarEvent format
  */
-export function transformGoogleCalendarEvent(
+export async function transformGoogleCalendarEvent(
   googleEvent: GoogleCalendarEvent
-): CalendarEvent {
+): Promise<CalendarEvent> {
   const isAllDay = !googleEvent.start.dateTime;
   
   let startTime: Date;
@@ -119,9 +115,9 @@ export function transformGoogleCalendarEvent(
   
   return {
     id: googleEvent.id,
-    title: sanitizeHtml(googleEvent.summary || 'Untitled Event'),
-    description: sanitizeHtml(googleEvent.description),
-    location: sanitizeHtml(googleEvent.location),
+    title: await sanitizeHtml(googleEvent.summary || 'Untitled Event'),
+    description: await sanitizeHtml(googleEvent.description),
+    location: await sanitizeHtml(googleEvent.location),
     startTime,
     endTime,
     isAllDay,
@@ -244,7 +240,7 @@ export async function fetchCalendarEvents(
     
     for (const googleEvent of data.items) {
       try {
-        const transformedEvent = transformGoogleCalendarEvent(googleEvent);
+        const transformedEvent = await transformGoogleCalendarEvent(googleEvent);
         events.push(transformedEvent);
       } catch (error) {
         // Log individual event transformation errors but continue processing
@@ -345,9 +341,9 @@ export function groupEventsByDay(events: CalendarEvent[], weekStart: Date): Map<
   }
   
   // Sort events within each day by start time
-  for (const [, dayEvents] of eventsByDay) {
+  eventsByDay.forEach((dayEvents) => {
     dayEvents.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-  }
+  });
   
   return eventsByDay;
 }

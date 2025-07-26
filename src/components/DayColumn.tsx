@@ -120,7 +120,7 @@ export function DayColumn({
           day.events.map((event, eventIndex) => (
             <div
               key={event.id}
-              ref={el => eventRefs.current[eventIndex] = el}
+              ref={el => { eventRefs.current[eventIndex] = el; }}
               role="listitem"
             >
               <EventCard

@@ -257,7 +257,7 @@ describe('Google Calendar API Integration', () => {
         status: 'confirmed'
       };
 
-      const result = transformGoogleCalendarEvent(googleEvent);
+      const result = await transformGoogleCalendarEvent(googleEvent);
 
       expect(result).toMatchObject({
         id: 'test123',
@@ -285,7 +285,7 @@ describe('Google Calendar API Integration', () => {
         htmlLink: 'https://calendar.google.com/event?eid=allday123'
       };
 
-      const result = transformGoogleCalendarEvent(googleEvent);
+      const result = await transformGoogleCalendarEvent(googleEvent);
 
       expect(result.isAllDay).toBe(true);
       expect(result.startTime.getHours()).toBe(12); // Should be set to noon
@@ -305,7 +305,7 @@ describe('Google Calendar API Integration', () => {
         htmlLink: 'https://calendar.google.com/event?eid=minimal123'
       };
 
-      const result = transformGoogleCalendarEvent(googleEvent);
+      const result = await transformGoogleCalendarEvent(googleEvent);
 
       expect(result.title).toBe('Minimal Event');
       expect(result.description).toBe('');
@@ -326,8 +326,8 @@ describe('Google Calendar API Integration', () => {
         htmlLink: 'https://calendar.google.com/event?eid=invalid123'
       };
 
-      expect(() => transformGoogleCalendarEvent(googleEvent))
-        .toThrow(CalendarError);
+      await expect(transformGoogleCalendarEvent(googleEvent))
+        .rejects.toThrow(CalendarError);
     });
 
     it('should transform attendees correctly', async () => {
@@ -355,7 +355,7 @@ describe('Google Calendar API Integration', () => {
         ]
       };
 
-      const result = transformGoogleCalendarEvent(googleEvent);
+      const result = await transformGoogleCalendarEvent(googleEvent);
 
       expect(result.attendees).toHaveLength(2);
       expect(result.attendees![0]).toMatchObject({

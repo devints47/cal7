@@ -111,6 +111,16 @@ export function ThemeProvider({ children, config = {} }: ThemeProviderProps) {
       root.style.setProperty(property, value);
     });
 
+    // Handle custom font URL
+    let fontLinkElement: HTMLLinkElement | null = null;
+    if (activeTheme.typography?.customFontUrl) {
+      fontLinkElement = document.createElement('link');
+      fontLinkElement.rel = 'stylesheet';
+      fontLinkElement.href = activeTheme.typography.customFontUrl;
+      fontLinkElement.id = `${classPrefix}-custom-font`;
+      document.head.appendChild(fontLinkElement);
+    }
+
     // Add theme class to root for additional styling hooks
     const themeClass = `${classPrefix}-theme-${resolvedMode}`;
     const otherThemeClass = `${classPrefix}-theme-${resolvedMode === 'light' ? 'dark' : 'light'}`;
@@ -124,6 +134,11 @@ export function ThemeProvider({ children, config = {} }: ThemeProviderProps) {
         root.style.removeProperty(property);
       });
       root.classList.remove(themeClass);
+      
+      // Remove custom font link
+      if (fontLinkElement && document.head.contains(fontLinkElement)) {
+        document.head.removeChild(fontLinkElement);
+      }
     };
   }, [activeTheme, resolvedMode, classPrefix]);
 

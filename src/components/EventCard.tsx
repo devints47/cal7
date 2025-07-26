@@ -143,13 +143,15 @@ export function EventCard({
     
     const startTime = event.startTime.toLocaleTimeString(locale, options);
     const endTime = event.endTime.toLocaleTimeString(locale, options);
-    const duration = calculateDuration(event.startTime, event.endTime);
     
-    if (compact) {
-      return startTime;
-    }
-    
-    return `${startTime} - ${endTime} (${duration})`;
+    // Always show start and end time (e.g., "8:00AM to 10:00PM")
+    return `${startTime} to ${endTime}`;
+  };
+
+  // Check if event is in the past
+  const isPastEvent = () => {
+    const now = new Date();
+    return event.endTime < now;
   };
 
   // Get accessible time description for screen readers
@@ -219,7 +221,7 @@ export function EventCard({
   return (
     <div
       ref={cardRef}
-      className={`cal7-event-card ${compact ? 'cal7-event-card--compact' : 'cal7-event-card--full'} ${isFocused ? 'cal7-event-card--focused' : ''} ${event.status !== 'confirmed' ? `cal7-event-card--${event.status}` : ''} ${className}`}
+      className={`cal7-event-card ${compact ? 'cal7-event-card--compact' : 'cal7-event-card--full'} ${isFocused ? 'cal7-event-card--focused' : ''} ${event.status !== 'confirmed' ? `cal7-event-card--${event.status}` : ''} ${isPastEvent() ? 'cal7-event-card--past' : ''} ${className}`}
       role="button"
       tabIndex={0}
       aria-label={getAccessibleLabel()}
@@ -253,6 +255,20 @@ export function EventCard({
 
         {/* Event Time */}
         <div className="cal7-event-card__time">
+          {/* Clock icon */}
+          <svg 
+            className="cal7-event-card__time-icon" 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12,6 12,12 16,14"></polyline>
+          </svg>
           <time 
             dateTime={event.startTime.toISOString()}
             className="cal7-event-card__time-text"
@@ -265,14 +281,19 @@ export function EventCard({
         {/* Event Location (if present and not compact) */}
         {event.location && !compact && (
           <div className="cal7-event-card__location">
-            <span 
+            <svg 
               className="cal7-event-card__location-icon" 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2"
               aria-hidden="true"
-              role="img"
-              aria-label="Location"
             >
-              📍
-            </span>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
             <span 
               className="cal7-event-card__location-text"
               title={event.location} // Full location on hover if truncated
@@ -300,14 +321,19 @@ export function EventCard({
             className="cal7-event-card__location-indicator"
             title={`Location: ${event.location}`}
           >
-            <span 
+            <svg 
               className="cal7-event-card__location-icon" 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2"
               aria-hidden="true"
-              role="img"
-              aria-label="Has location"
             >
-              📍
-            </span>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
           </div>
         )}
       </div>

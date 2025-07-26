@@ -162,7 +162,7 @@ export function CalendarGrid({
             onEventFocus={handleEventFocus}
             isFocused={dayIndex === focusedDayIndex}
             focusedEventIndex={dayIndex === focusedDayIndex ? focusedEventIndex : -1}
-            className="cal7-calendar-grid__day"
+            className={`cal7-calendar-grid__day ${dayIndex % 2 === 0 ? 'cal7-day-column--even' : 'cal7-day-column--odd'}`}
             theme={theme}
             locale={locale}
             timeZone={timeZone}

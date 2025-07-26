@@ -27,6 +27,17 @@
   --cal7-color-warning: #f59e0b;
   --cal7-color-info: #3b82f6;
 
+  /* New enhanced styling colors */
+  --cal7-color-primary-light: #dbeafe;
+  --cal7-color-border-hover: #9ca3af;
+  --cal7-color-today-bg: #fffbeb;
+  --cal7-color-day-even: #fafafa;
+  --cal7-color-day-odd: #ffffff;
+  --cal7-color-day-hover: #f8fafc;
+  --cal7-color-header-even: #f3f4f6;
+  --cal7-color-header-odd: #f9fafb;
+  --cal7-color-event-past-text: #9ca3af;
+
   /* Typography */
   --cal7-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --cal7-font-size-xs: 0.75rem;
@@ -64,6 +75,7 @@
   --cal7-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
   --cal7-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
   --cal7-shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --cal7-shadow-calendar: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   /* Z-index */
   --cal7-z-index-dropdown: 50;
@@ -74,6 +86,11 @@
   --cal7-transition-fast: 0.15s ease-in-out;
   --cal7-transition-normal: 0.2s ease-in-out;
   --cal7-transition-slow: 0.3s ease-in-out;
+  
+  /* Event customization */
+  --cal7-event-height: auto;
+  --cal7-event-width: 100%;
+  --cal7-event-title-min-height: 2.5rem;
 }
 
 /* Dark theme variables */
@@ -103,11 +120,23 @@
   --cal7-color-warning: #fbbf24;
   --cal7-color-info: #60a5fa;
 
+  /* New enhanced styling colors for dark theme */
+  --cal7-color-primary-light: #1e3a8a;
+  --cal7-color-border-hover: #6b7280;
+  --cal7-color-today-bg: #451a03;
+  --cal7-color-day-even: #1f2937;
+  --cal7-color-day-odd: #111827;
+  --cal7-color-day-hover: #374151;
+  --cal7-color-header-even: #374151;
+  --cal7-color-header-odd: #1f2937;
+  --cal7-color-event-past-text: #6b7280;
+
   /* Shadows (darker for dark theme) */
   --cal7-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --cal7-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
   --cal7-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.4);
   --cal7-shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --cal7-shadow-calendar: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
 /* Base component styles using CSS custom properties */
@@ -133,6 +162,8 @@
   font-family: var(--cal7-font-family);
   background-color: var(--cal7-color-background);
   color: var(--cal7-color-text);
+  box-shadow: var(--cal7-shadow-calendar);
+  border-radius: var(--cal7-border-radius-lg);
 }
 
 /* Week Navigation */
@@ -140,11 +171,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--cal7-spacing-lg);
   padding: var(--cal7-spacing-md);
   background: var(--cal7-color-surface);
-  border-radius: var(--cal7-border-radius-lg);
   border: 1px solid var(--cal7-color-border);
+  border-bottom: 1px solid var(--cal7-color-border); /* Add themed border */
+  border-top-left-radius: var(--cal7-border-radius-lg);
+  border-top-right-radius: var(--cal7-border-radius-lg);
 }
 
 .cal7-week-navigation__controls {
@@ -214,7 +246,9 @@
 /* Calendar Grid */
 .cal7-calendar-grid {
   border: 1px solid var(--cal7-color-border);
-  border-radius: var(--cal7-border-radius-lg);
+  border-top: none;
+  border-bottom-left-radius: var(--cal7-border-radius-lg);
+  border-bottom-right-radius: var(--cal7-border-radius-lg);
   overflow: hidden;
   background: var(--cal7-color-background);
 }
@@ -247,6 +281,20 @@
   color: var(--cal7-color-today);
 }
 
+/* Alternating header colors */
+.cal7-calendar-grid__header:nth-child(even) {
+  background: var(--cal7-color-header-even, var(--cal7-color-surface));
+}
+
+.cal7-calendar-grid__header:nth-child(odd) {
+  background: var(--cal7-color-header-odd, var(--cal7-color-surface));
+}
+
+.cal7-calendar-grid__header--today.cal7-calendar-grid__header:nth-child(even),
+.cal7-calendar-grid__header--today.cal7-calendar-grid__header:nth-child(odd) {
+  background: var(--cal7-color-today-background);
+}
+
 .cal7-calendar-grid__header-content {
   display: flex;
   flex-direction: column;
@@ -276,6 +324,7 @@
   border-bottom: 1px solid var(--cal7-color-border);
   min-height: 120px;
   position: relative;
+  transition: all var(--cal7-transition-normal);
 }
 
 .cal7-day-column:last-child {
@@ -286,10 +335,23 @@
   background: var(--cal7-color-today-background);
 }
 
-.cal7-day-column--focused {
-  background: var(--cal7-color-hover);
-  outline: 2px solid var(--cal7-color-focus);
-  outline-offset: -2px;
+/* Alternating day colors */
+.cal7-day-column:nth-child(even) {
+  background: var(--cal7-color-day-even, var(--cal7-color-background));
+}
+
+.cal7-day-column:nth-child(odd) {
+  background: var(--cal7-color-day-odd, var(--cal7-color-background));
+}
+
+.cal7-day-column--today.cal7-day-column:nth-child(even),
+.cal7-day-column--today.cal7-day-column:nth-child(odd) {
+  background: var(--cal7-color-today-background);
+}
+
+.cal7-day-column:hover {
+  background: var(--cal7-color-day-hover, var(--cal7-color-hover));
+  transform: scale(1.01);
 }
 
 /* Mobile Day Headers */
@@ -334,7 +396,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--cal7-spacing-sm);
-  min-height: 80px;
+  min-height: var(--cal7-event-height, 120px); /* Increased and customizable height */
 }
 
 /* Empty Day State */
@@ -356,14 +418,16 @@
   background: var(--cal7-color-event-background);
   color: var(--cal7-color-event-text);
   cursor: pointer;
-  transition: all var(--cal7-transition-normal);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  width: var(--cal7-event-width, 100%);
 }
 
 .cal7-event-card:hover {
   border-color: var(--cal7-color-primary);
-  box-shadow: var(--cal7-shadow-md);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px) scale(1.02);
+  z-index: 10;
 }
 
 .cal7-event-card:focus {
@@ -378,6 +442,17 @@
 
 .cal7-event-card--compact {
   padding: var(--cal7-spacing-xs);
+}
+
+/* Past events styling */
+.cal7-event-card--past {
+  opacity: 0.6;
+}
+
+.cal7-event-card--past .cal7-event-card__title,
+.cal7-event-card--past .cal7-event-card__time-text,
+.cal7-event-card--past .cal7-event-card__location-text {
+  color: var(--cal7-color-event-past-text, var(--cal7-color-text-muted));
 }
 
 .cal7-event-card__status {
@@ -407,15 +482,19 @@
 }
 
 .cal7-event-card__title {
-  font-size: var(--cal7-font-size-sm);
-  font-weight: var(--cal7-font-weight-semibold);
+  font-size: var(--cal7-font-size-base); /* Increased font size */
+  font-weight: var(--cal7-font-weight-bold); /* Made bold */
   color: var(--cal7-color-text);
   margin: 0 0 var(--cal7-spacing-xs) 0;
   line-height: var(--cal7-line-height-tight);
+  min-height: var(--cal7-event-title-min-height, 2.5rem); /* Minimum 2 lines height */
+  display: flex;
+  align-items: flex-start;
 }
 
 .cal7-event-card--compact .cal7-event-card__title {
-  font-size: var(--cal7-font-size-xs);
+  font-size: var(--cal7-font-size-sm);
+  min-height: var(--cal7-event-title-min-height, 2rem);
 }
 
 .cal7-event-card__time {
@@ -423,6 +502,13 @@
   align-items: center;
   gap: var(--cal7-spacing-xs);
   margin-bottom: var(--cal7-spacing-xs);
+}
+
+.cal7-event-card__time-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--cal7-color-text-muted);
+  flex-shrink: 0;
 }
 
 .cal7-event-card__time-text {
@@ -438,6 +524,13 @@
   margin-bottom: var(--cal7-spacing-xs);
 }
 
+.cal7-event-card__location-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--cal7-color-text-muted);
+  flex-shrink: 0;
+}
+
 .cal7-event-card__location-text {
   font-size: var(--cal7-font-size-xs);
   color: var(--cal7-color-text-muted);
@@ -447,7 +540,12 @@
   position: absolute;
   bottom: var(--cal7-spacing-xs);
   right: var(--cal7-spacing-xs);
-  font-size: var(--cal7-font-size-xs);
+}
+
+.cal7-event-card__location-indicator .cal7-event-card__location-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--cal7-color-text-muted);
 }
 
 .cal7-event-card__description-text {

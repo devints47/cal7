@@ -14,6 +14,7 @@ import {
   isValidDate,
   getWeekNumber,
   getWeekRangeString,
+  isCurrentWeek,
 } from '../date-utils';
 import type { CalendarEvent } from '../../types/events';
 import { afterEach } from 'node:test';
@@ -367,7 +368,7 @@ describe('date-utils', () => {
       const weekStart = new Date(2024, 2, 10); // March 10, 2024 (Sunday)
       const rangeString = getWeekRangeString(weekStart);
       
-      expect(rangeString).toBe('March 2024 10 - 16');
+      expect(rangeString).toBe('Mar 10 - 16, 2024');
     });
 
     it('formats week range for different months', () => {
@@ -382,7 +383,25 @@ describe('date-utils', () => {
       const rangeString = getWeekRangeString(weekStart, 'en-GB');
       
       // Should use British date formatting
-      expect(rangeString).toContain('March');
+      expect(rangeString).toContain('Mar');
+    });
+  });
+
+  describe('isCurrentWeek', () => {
+    it('returns true for current week start date', () => {
+      const today = new Date();
+      const currentWeekStart = getWeekStart(today);
+      
+      expect(isCurrentWeek(currentWeekStart)).toBe(true);
+    });
+
+    it('returns false for different week', () => {
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(today.getDate() + 7);
+      const nextWeekStart = getWeekStart(nextWeek);
+      
+      expect(isCurrentWeek(nextWeekStart)).toBe(false);
     });
   });
 
