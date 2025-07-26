@@ -21,9 +21,9 @@ vi.mock('../CalendarClient', () => ({
 }));
 
 // Mock the google-calendar-api utility
-const mockFetchCalendarEvents = vi.fn();
+const mockFetchCalendarData = vi.fn();
 vi.mock('../../utils/google-calendar-api', () => ({
-  fetchCalendarEvents: mockFetchCalendarEvents,
+  fetchCalendarData: mockFetchCalendarData,
 }));
 
 // Mock environment variables
@@ -42,7 +42,7 @@ describe('Calendar Server Component', () => {
   describe('Environment Variable Validation', () => {
     it('renders error when GOOGLE_CALENDAR_API_KEY is missing', async () => {
       delete process.env.GOOGLE_CALENDAR_API_KEY;
-      mockFetchCalendarEvents.mockRejectedValue(new Error('Missing API key'));
+      mockFetchCalendarData.mockRejectedValue(new Error('Missing API key'));
 
       const result = await Calendar({});
 
@@ -54,7 +54,7 @@ describe('Calendar Server Component', () => {
     it('calls onError callback when API key is missing', async () => {
       delete process.env.GOOGLE_CALENDAR_API_KEY;
       const onError = vi.fn();
-      mockFetchCalendarEvents.mockRejectedValue(new Error('Missing API key'));
+      mockFetchCalendarData.mockRejectedValue(new Error('Missing API key'));
 
       await Calendar({
         onError,
@@ -81,13 +81,16 @@ describe('Calendar Server Component', () => {
         },
       ];
 
-      mockFetchCalendarEvents.mockResolvedValue(mockEvents);
+      mockFetchCalendarData.mockResolvedValue({
+        events: mockEvents,
+        metadata: { name: 'Test Calendar' }
+      });
 
       const result = await Calendar({});
 
       render(result);
 
-      expect(mockFetchCalendarEvents).toHaveBeenCalled();
+      expect(mockFetchCalendarData).toHaveBeenCalled();
       expect(screen.getByTestId('calendar-client')).toBeInTheDocument();
       expect(screen.getByTestId('events-count')).toHaveTextContent('1');
     });
@@ -111,7 +114,7 @@ describe('Calendar Server Component', () => {
       render(result);
 
       expect(customFetcher).toHaveBeenCalled();
-      expect(mockFetchCalendarEvents).not.toHaveBeenCalled();
+      expect(mockFetchCalendarData).not.toHaveBeenCalled();
       expect(screen.getByTestId('calendar-client')).toBeInTheDocument();
     });
   });
@@ -122,7 +125,7 @@ describe('Calendar Server Component', () => {
     });
 
     it('handles network errors', async () => {
-      mockFetchCalendarEvents.mockRejectedValue(new Error('Network error'));
+      mockFetchCalendarData.mockRejectedValue(new Error('Network error'));
 
       const result = await Calendar({});
 
@@ -134,7 +137,7 @@ describe('Calendar Server Component', () => {
     it('calls onError callback for all error types', async () => {
       const onError = vi.fn();
       
-      mockFetchCalendarEvents.mockRejectedValue(new Error('Test error'));
+      mockFetchCalendarData.mockRejectedValue(new Error('Test error'));
 
       await Calendar({
         onError,
@@ -147,7 +150,7 @@ describe('Calendar Server Component', () => {
   describe('Props Handling', () => {
     beforeEach(() => {
       process.env.GOOGLE_CALENDAR_API_KEY = 'AIza' + 'x'.repeat(35);
-      mockFetchCalendarEvents.mockResolvedValue([]);
+      mockFetchCalendarData.mockResolvedValue([]);
     });
 
     it('passes all props to CalendarClient component', async () => {

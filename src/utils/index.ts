@@ -1,6 +1,6 @@
 // Export Google Calendar API utilities
 export {
-  fetchCalendarEvents,
+  fetchCalendarData,
   transformGoogleCalendarEvent,
   validateCalendarId,
   validateApiKey,

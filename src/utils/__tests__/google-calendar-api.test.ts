@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { 
-  fetchCalendarEvents,
+  fetchCalendarData,
   transformGoogleCalendarEvent,
   validateCalendarId,
   validateApiKey,
@@ -27,7 +27,7 @@ describe('Google Calendar API Integration', () => {
     process.env = originalEnv;
   });
 
-  describe('fetchCalendarEvents', () => {
+  describe('fetchCalendarData', () => {
     const mockApiKey = 'AIzaSyDummyKeyForTesting123456789012345';
 
     const mockGoogleEvent: GoogleCalendarEvent = {
@@ -60,7 +60,7 @@ describe('Google Calendar API Integration', () => {
         json: () => Promise.resolve(mockApiResponse)
       });
 
-      const events = await fetchCalendarEvents();
+      const { events } = await fetchCalendarData();
 
       expect(events).toHaveLength(1);
       expect(events[0]).toMatchObject({
@@ -92,7 +92,7 @@ describe('Google Calendar API Integration', () => {
         })
       });
 
-      await fetchCalendarEvents();
+      await fetchCalendarData();
 
       // Verify that singleEvents=true is included in the API call
       expect(mockFetch).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe('Google Calendar API Integration', () => {
     it('should throw CalendarError when API key is missing', async () => {
       delete process.env.GOOGLE_CALENDAR_API_KEY;
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -126,7 +126,7 @@ describe('Google Calendar API Integration', () => {
         statusText: 'Unauthorized'
       });
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -140,7 +140,7 @@ describe('Google Calendar API Integration', () => {
         statusText: 'Forbidden'
       });
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -154,7 +154,7 @@ describe('Google Calendar API Integration', () => {
         statusText: 'Not Found'
       });
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -164,7 +164,7 @@ describe('Google Calendar API Integration', () => {
       
       mockFetch.mockRejectedValueOnce(new TypeError('Failed to fetch'));
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -183,7 +183,7 @@ describe('Google Calendar API Integration', () => {
         })
       });
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -197,7 +197,7 @@ describe('Google Calendar API Integration', () => {
         json: () => Promise.reject(new Error('Invalid JSON'))
       });
 
-      await expect(fetchCalendarEvents())
+      await expect(fetchCalendarData())
         .rejects
         .toThrow(CalendarError);
     });
@@ -224,7 +224,7 @@ describe('Google Calendar API Integration', () => {
       // Mock console.warn to verify error logging
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-      const events = await fetchCalendarEvents();
+      const { events } = await fetchCalendarData();
 
       // Should return only valid events
       expect(events).toHaveLength(1);

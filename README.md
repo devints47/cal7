@@ -17,7 +17,7 @@ import "cal7/styles";
 // Set environment variable: GOOGLE_CALENDAR_API_KEY=your_api_key
 
 export default function MyApp() {
-  return <Calendar />;
+  return <Calendar showSubscribeButton={true} />;
 }
 ```
 
@@ -255,15 +255,19 @@ const themeWithCustomFont = {
 
 ### Calendar
 
-| Prop         | Type                     | Default      | Description                        |
-| ------------ | ------------------------ | ------------ | ---------------------------------- |
-| `calendarId` | `string`                 | **Required** | Google Calendar ID                 |
-| `locale`     | `string`                 | `'en-US'`    | Locale for date/time formatting    |
-| `timeZone`   | `string`                 | `'UTC'`      | Timezone for event display         |
-| `revalidate` | `number`                 | `300`        | Cache revalidation time in seconds |
-| `className`  | `string`                 | `''`         | Additional CSS classes             |
-| `theme`      | `CalendarTheme`          | `undefined`  | Custom theme configuration         |
-| `onError`    | `(error: Error) => void` | `undefined`  | Error handler callback             |
+| Prop                   | Type                     | Default     | Description                                               |
+| ---------------------- | ------------------------ | ----------- | --------------------------------------------------------- |
+| `locale`               | `string`                 | `'en-US'`   | Locale for date/time formatting                           |
+| `timeZone`             | `string`                 | `'UTC'`     | Timezone for event display                                |
+| `revalidate`           | `number`                 | `300`       | Cache revalidation time in seconds                        |
+| `className`            | `string`                 | `''`        | Additional CSS classes                                    |
+| `theme`                | `CalendarTheme`          | `undefined` | Custom theme configuration                                |
+| `darkTheme`            | `CalendarTheme`          | `undefined` | Custom dark theme configuration                           |
+| `mode`                 | `ThemeMode`              | `'light'`   | Theme mode: 'light', 'dark', or 'system'                 |
+| `classPrefix`          | `string`                 | `'cal7'`    | CSS class prefix for custom styling                       |
+| `showSubscribeButton`  | `boolean`                | `false`     | Show "Subscribe to Calendar!" button with .ics download   |
+| `fetcher`              | `() => Promise<Event[]>` | `undefined` | Custom data fetcher function                              |
+| `onError`              | `(error: Error) => void` | `undefined` | Error handler callback                                    |
 
 ### ThemeProvider
 
@@ -298,6 +302,16 @@ const themeWithCustomFont = {
 - **Map Integration**: Event locations are clickable and open in device-appropriate map apps
 - **Add to Calendar**: Event modal dates are clickable with add-to-calendar functionality
 - **Themed Buttons**: Add-to-calendar buttons match the selected theme (no gradients)
+
+### Subscribe to Calendar Button
+
+When enabled with `showSubscribeButton={true}`, displays a prominent "Subscribe to Calendar!" button that provides:
+
+- **Full Calendar Subscription**: Users can subscribe to the entire calendar feed via URL
+- **Download .ics File**: Users can download all calendar events as a local .ics file
+- **Upward-Opening Menu**: Dropdown menu opens upward to avoid being cut off
+- **Theme Integration**: Button styling matches your current theme with orange gradient
+- **Desktop/Mobile Friendly**: Works across all devices and calendar applications
 
 ### Navigation Improvements
 

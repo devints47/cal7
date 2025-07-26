@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [
+    react(),
     dts({
-      insertTypesEntry: true,
       include: ['src/**/*'],
-      exclude: ['src/**/*.test.*', 'src/**/*.spec.*']
+      exclude: ['**/*.test.*', '**/*.spec.*'],
+      rollupTypes: true
     })
   ],
   build: {
@@ -17,32 +19,32 @@ export default defineConfig({
         route: resolve(__dirname, 'src/route.ts')
       },
       name: 'Cal7',
-      formats: ['es', 'cjs'],
-      fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`
+      formats: ['es', 'cjs']
     },
     rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        'next',
-        'next/router',
-        'next/navigation'
-      ],
+      external: ['react', 'react-dom', 'next'],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime'
+          next: 'Next'
         }
+      },
+      onwarn(warning, warn) {
+        // Suppress "use client" warnings for library builds
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+          return;
+        }
+        // Suppress external module warnings from test dependencies
+        if (warning.code === 'UNRESOLVED_IMPORT' && warning.id?.includes('jsdom')) {
+          return;
+        }
+        warn(warning);
       }
     },
+    cssCodeSplit: false,
     sourcemap: true,
+    target: 'esnext',
     minify: 'esbuild'
-  },
-  css: {
-    modules: {
-      localsConvention: 'camelCase'
-    }
   }
 });

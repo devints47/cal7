@@ -1,9 +1,12 @@
 // Main package exports
 export { Calendar } from './components/Calendar';
 export { CalendarClient } from './components/CalendarClient';
+export { CalendarGrid } from './components/CalendarGrid';
+export { WeekNavigation } from './components/WeekNavigation';
+export { default as AddToCalendarButton } from './components/AddToCalendarButton';
+export { SubscribeButton } from './components/SubscribeButton';
 
 export { EventModal } from './components/EventModal';
-export { default as AddToCalendarButton } from './components/AddToCalendarButton';
 
 // Error handling components
 export { 

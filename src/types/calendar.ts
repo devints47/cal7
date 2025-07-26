@@ -13,6 +13,7 @@ export interface CalendarProps {
   classPrefix?: string;
   fetcher?: () => Promise<CalendarEvent[]>;
   onError?: (error: Error) => void;
+  showSubscribeButton?: boolean;
 }
 
 // Calendar Client Component props
@@ -24,6 +25,7 @@ export interface CalendarClientProps {
   timeZone?: string;
   onEventClick?: (event: CalendarEvent) => void;
   calendarName?: string;
+  showSubscribeButton?: boolean;
 }
 
 // Event Modal Component props

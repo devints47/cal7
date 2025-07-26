@@ -17,6 +17,7 @@ import { WeekNavigation } from './WeekNavigation';
 import { CalendarGrid } from './CalendarGrid';
 import { EventModal } from './EventModal';
 import { EventModalErrorBoundary } from './CalendarErrorBoundary';
+import { SubscribeButton } from './SubscribeButton';
 import { useThemeClasses } from './ThemeProvider';
 
 /**
@@ -34,6 +35,7 @@ export function CalendarClient({
   timeZone = 'UTC',
   onEventClick,
   calendarName = 'Calendar',
+  showSubscribeButton = false,
 }: CalendarClientProps) {
   // Get theme classes with fallback to default
   const themeClasses = useThemeClasses();
@@ -129,6 +131,14 @@ export function CalendarClient({
           showAddToCalendar={true}
         />
       </EventModalErrorBoundary>
+
+      {showSubscribeButton && (
+        <SubscribeButton
+          events={events}
+          calendarName={calendarName}
+          className={`${themeClasses.calendar}__subscribe-button`}
+        />
+      )}
     </div>
   );
 }

@@ -33,6 +33,7 @@ export async function Calendar({
   classPrefix = 'cal7',
   fetcher,
   onError,
+  showSubscribeButton = false,
 }: CalendarProps) {
   // Environment variable validation with development warnings
   const apiKey = process.env.GOOGLE_CALENDAR_API_KEY;
@@ -160,12 +161,13 @@ export async function Calendar({
           />
         ))}
         <CalendarErrorBoundary>
-          <CalendarClient
-            events={events}
-            locale={locale}
-            timeZone={timeZone}
-            calendarName={calendarName}
-          />
+                  <CalendarClient
+          events={events}
+          locale={locale}
+          timeZone={timeZone}
+          calendarName={calendarName}
+          showSubscribeButton={showSubscribeButton}
+        />
         </CalendarErrorBoundary>
       </div>
     </ThemeProvider>
