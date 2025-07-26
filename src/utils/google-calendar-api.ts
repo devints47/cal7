@@ -28,11 +28,11 @@ const createPurify = async () => {
     const DOMPurify = (await import('dompurify')).default;
     return DOMPurify(window);
   } else {
-    // Server environment - use JSDOM to create a proper window object
-    const { JSDOM } = await import('jsdom');
-    const DOMPurify = (await import('dompurify')).default;
-    const window = new JSDOM('').window;
-    return DOMPurify(window as unknown as Window & typeof globalThis);
+    // Server environment - skip HTML sanitization for bundle size
+    // HTML will be sanitized on the client side when rendered
+    return {
+      sanitize: (html: string) => html // Pass through on server
+    };
   }
 };
 

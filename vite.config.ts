@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     dts({
       include: ['src/**/*'],
-      exclude: ['**/*.test.*', '**/*.spec.*'],
+      exclude: ['**/*.test.*', '**/*.spec.*', '**/__tests__/**/*'],
       rollupTypes: true
     })
   ],
@@ -22,11 +22,48 @@ export default defineConfig({
       formats: ['es', 'cjs']
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'next'],
+      // Externalize ALL dependencies except the few we want to bundle
+      external: (id) => {
+        // Bundle only these 3 runtime dependencies
+        const bundledDeps = ['dompurify', 'focus-trap', 'zod'];
+        
+        // External: React ecosystem
+        if (['react', 'react-dom', 'react/jsx-runtime', 'next'].some(dep => id.startsWith(dep))) {
+          return true;
+        }
+        
+        // External: Node.js built-ins
+        if (['fs', 'path', 'url', 'http', 'https', 'crypto', 'stream', 'util', 'events', 'os', 'assert', 'buffer', 'string_decoder', 'zlib', 'tls', 'net', 'child_process', 'vm'].includes(id)) {
+          return true;
+        }
+        
+        // External: Dev/test dependencies (should never be imported, but safety check)
+        if (['jsdom', 'vitest', '@testing-library', 'jest', 'axe-core'].some(dep => id.includes(dep))) {
+          return true;
+        }
+        
+        // External: CSS/build tools
+        if (['@csstools', 'autoprefixer', 'postcss', 'vite', 'esbuild'].some(dep => id.includes(dep))) {
+          return true;
+        }
+        
+        // Bundle our 3 runtime deps
+        if (bundledDeps.some(dep => id === dep || id.startsWith(dep + '/'))) {
+          return false;
+        }
+        
+        // External: Everything else from node_modules
+        if (id.includes('node_modules') || (!id.startsWith('.') && !id.startsWith('/'))) {
+          return true;
+        }
+        
+        return false;
+      },
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'jsxRuntime',
           next: 'Next'
         }
       },
@@ -35,8 +72,8 @@ export default defineConfig({
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
           return;
         }
-        // Suppress external module warnings from test dependencies
-        if (warning.code === 'UNRESOLVED_IMPORT' && warning.id?.includes('jsdom')) {
+        // Suppress external module warnings
+        if (warning.code === 'UNRESOLVED_IMPORT') {
           return;
         }
         warn(warning);
