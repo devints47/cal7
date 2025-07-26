@@ -3,7 +3,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 import type { CalendarEvent } from '../types/events';
 import type { CalendarTheme } from '../types/theme';
-import { formatTime, calculateDuration, formatDate } from '../utils/date-utils';
+import { calculateDuration } from '../utils/date-utils';
 
 interface EventCardProps {
   event: CalendarEvent;
@@ -39,7 +39,7 @@ export function EventCard({
   compact = false,
   isFocused = false,
   className = '',
-  theme,
+  theme: _theme,
   locale = 'en-US',
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
 }: EventCardProps) {

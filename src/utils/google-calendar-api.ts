@@ -1,16 +1,38 @@
 import { z } from 'zod';
 import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
 import type { 
   CalendarEvent, 
-  GoogleCalendarEvent, 
-  GoogleCalendarResponse 
+  GoogleCalendarEvent
 } from '../types/events';
 import { CalendarError } from '../types/utils';
 
-// Create a server-side DOMPurify instance
-const window = new JSDOM('').window;
-const purify = DOMPurify(window as any);
+// Google Calendar configuration - using the same public calendar as NovelTea
+const CALENDAR_ID = 'b382cfad3622bc528f1e748cc100b3abc92abfe801f983ca2a527357f7be7445@group.calendar.google.com';
+
+// Create a DOMPurify instance - handle both server and client environments
+const createPurify = () => {
+  if (typeof window !== 'undefined') {
+    // Browser environment
+    return DOMPurify(window);
+  } else {
+    // Server environment - create a minimal window-like object for DOMPurify
+    const mockWindow = {
+      document: {
+        implementation: {
+          createHTMLDocument: () => ({
+            createElement: () => ({}),
+            createDocumentFragment: () => ({}),
+          }),
+        },
+        createElement: () => ({}),
+        createDocumentFragment: () => ({}),
+      },
+    };
+    return DOMPurify(mockWindow as unknown as Window & typeof globalThis);
+  }
+};
+
+const purify = createPurify();
 
 // Zod schemas for Google Calendar API response validation
 const GoogleCalendarEventSchema = z.object({
@@ -64,8 +86,7 @@ function sanitizeHtml(content: string | undefined): string {
  * Transforms a Google Calendar event to our internal CalendarEvent format
  */
 export function transformGoogleCalendarEvent(
-  googleEvent: GoogleCalendarEvent,
-  calendarId: string
+  googleEvent: GoogleCalendarEvent
 ): CalendarEvent {
   const isAllDay = !googleEvent.start.dateTime;
   
@@ -106,8 +127,8 @@ export function transformGoogleCalendarEvent(
     isAllDay,
     url: googleEvent.htmlLink,
     status: googleEvent.status || 'confirmed',
-    googleCalendarId: calendarId,
-    icalUrl: `https://calendar.google.com/calendar/ical/${calendarId}/public/basic.ics`,
+    googleCalendarId: CALENDAR_ID,
+    icalUrl: `https://calendar.google.com/calendar/ical/${CALENDAR_ID}/public/basic.ics`,
     attendees: googleEvent.attendees?.map(attendee => ({
       email: attendee.email,
       name: attendee.displayName,
@@ -119,9 +140,9 @@ export function transformGoogleCalendarEvent(
 /**
  * Builds the Google Calendar API URL with proper parameters
  */
-function buildCalendarApiUrl(calendarId: string, apiKey: string): string {
+function buildCalendarApiUrl(apiKey: string): string {
   const baseUrl = 'https://www.googleapis.com/calendar/v3/calendars';
-  const encodedCalendarId = encodeURIComponent(calendarId);
+  const encodedCalendarId = encodeURIComponent(CALENDAR_ID);
   
   // Calculate date range: 6 months past to 6 months future
   const now = new Date();
@@ -147,17 +168,9 @@ function buildCalendarApiUrl(calendarId: string, apiKey: string): string {
  * Fetches calendar events from Google Calendar API
  */
 export async function fetchCalendarEvents(
-  calendarId: string,
   apiKey?: string
 ): Promise<CalendarEvent[]> {
-  // Validate inputs
-  if (!calendarId) {
-    throw new CalendarError(
-      'Calendar ID is required',
-      'INVALID_CALENDAR_ID'
-    );
-  }
-  
+  // Validate API key
   const key = apiKey || process.env.GOOGLE_CALENDAR_API_KEY;
   if (!key) {
     throw new CalendarError(
@@ -166,7 +179,7 @@ export async function fetchCalendarEvents(
     );
   }
   
-  const url = buildCalendarApiUrl(calendarId, key);
+  const url = buildCalendarApiUrl(key);
   
   try {
     const response = await fetch(url, {
@@ -192,7 +205,7 @@ export async function fetchCalendarEvents(
           );
         case 404:
           throw new CalendarError(
-            `Calendar not found: ${calendarId}`,
+            `Calendar not found: ${CALENDAR_ID}`,
             'INVALID_CALENDAR_ID'
           );
         default:
@@ -231,7 +244,7 @@ export async function fetchCalendarEvents(
     
     for (const googleEvent of data.items) {
       try {
-        const transformedEvent = transformGoogleCalendarEvent(googleEvent, calendarId);
+        const transformedEvent = transformGoogleCalendarEvent(googleEvent);
         events.push(transformedEvent);
       } catch (error) {
         // Log individual event transformation errors but continue processing

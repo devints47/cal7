@@ -132,7 +132,7 @@ export function CalendarGrid({
     >
       {/* Desktop: Column Headers */}
       <div className="cal7-calendar-grid__headers">
-        {weekData.days.map((day, index) => (
+        {weekData.days.map((day) => (
           <div
             key={day.date.toISOString()}
             className={`cal7-calendar-grid__header ${day.isToday ? 'cal7-calendar-grid__header--today' : ''}`}

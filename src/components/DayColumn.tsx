@@ -37,7 +37,7 @@ export function DayColumn({
   focusedEventIndex,
   className = '',
   theme,
-  locale = 'en-US',
+  locale: _locale = 'en-US',
   timeZone = 'UTC',
 }: DayColumnProps) {
   const dayRef = useRef<HTMLDivElement>(null);
@@ -61,6 +61,14 @@ export function DayColumn({
     onDayFocus(dayIndex);
   };
 
+  // Handle day keyboard interaction
+  const handleDayKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleDayClick();
+    }
+  };
+
   // Handle event click
   const handleEventClick = (event: CalendarEvent, eventIndex: number) => {
     onEventFocus(dayIndex, eventIndex);
@@ -73,7 +81,7 @@ export function DayColumn({
   };
 
   // Generate accessible day description
-  const dayDescription = `${day.dayName}, ${formatDateShort(day.date, locale)}${day.isToday ? ', today' : ''}, ${day.events.length} event${day.events.length !== 1 ? 's' : ''}`;
+  const dayDescription = `${day.dayName}, ${formatDateShort(day.date, _locale)}${day.isToday ? ', today' : ''}, ${day.events.length} event${day.events.length !== 1 ? 's' : ''}`;
 
   return (
     <div
@@ -83,6 +91,7 @@ export function DayColumn({
       aria-label={dayDescription}
       tabIndex={isFocused && day.events.length === 0 ? 0 : -1}
       onClick={handleDayClick}
+      onKeyDown={handleDayKeyDown}
     >
       {/* Mobile: Day Header (hidden on desktop) */}
       <div className="cal7-day-column__mobile-header">
@@ -91,7 +100,7 @@ export function DayColumn({
             {day.dayName}
           </h3>
           <p className="cal7-day-column__mobile-day-date">
-            {formatDateShort(day.date, locale)}
+            {formatDateShort(day.date, _locale)}
           </p>
           {day.isToday && (
             <span className="cal7-day-column__today-indicator">
@@ -122,7 +131,7 @@ export function DayColumn({
                 isFocused={isFocused && focusedEventIndex === eventIndex}
                 className="cal7-day-column__event"
                 theme={theme}
-                locale={locale}
+                locale={_locale}
                 timeZone={timeZone}
               />
             </div>
@@ -131,7 +140,7 @@ export function DayColumn({
           <EmptyDayState 
             day={day} 
             className="cal7-day-column__empty"
-            locale={locale}
+            locale={_locale}
           />
         )}
       </div>
@@ -150,7 +159,7 @@ interface EmptyDayStateProps {
   locale?: string;
 }
 
-function EmptyDayState({ day, className = '', locale = 'en-US' }: EmptyDayStateProps) {
+function EmptyDayState({ day, className = '', locale: _locale = 'en-US' }: EmptyDayStateProps) {
   const today = new Date();
   const isPast = day.date < today;
   const isToday = day.isToday;

@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import '../styles/calendar.css';
 import '../styles/calendar-grid.css';
 import type { CalendarClientProps } from '../types/calendar';
-import type { CalendarEvent, WeekData } from '../types/events';
+import type { CalendarEvent } from '../types/events';
 import { 
   getCurrentWeek, 
   getNextWeek, 

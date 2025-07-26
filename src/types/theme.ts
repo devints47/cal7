@@ -2,44 +2,56 @@
 
 export interface CalendarTheme {
   // Color scheme
-  primary?: string;
-  secondary?: string;
-  background?: string;
-  surface?: string;
-  
-  // Text colors
-  textPrimary?: string;
-  textSecondary?: string;
-  textMuted?: string;
-  
-  // Border colors
-  border?: string;
-  borderLight?: string;
-  
-  // State colors
-  today?: string;
-  todayBackground?: string;
-  focus?: string;
-  hover?: string;
-  
-  // Event colors
-  eventBackground?: string;
-  eventBorder?: string;
-  eventText?: string;
-  
-  // Status colors
-  tentative?: string;
-  cancelled?: string;
-  confirmed?: string;
+  colors?: {
+    primary?: string;
+    secondary?: string;
+    background?: string;
+    surface?: string;
+    
+    // Text colors
+    text?: string;
+    textSecondary?: string;
+    textMuted?: string;
+    
+    // Border colors
+    border?: string;
+    borderLight?: string;
+    
+    // State colors
+    today?: string;
+    todayBackground?: string;
+    focus?: string;
+    hover?: string;
+    
+    // Event colors
+    eventBackground?: string;
+    eventBorder?: string;
+    eventText?: string;
+    
+    // Status colors
+    tentative?: string;
+    cancelled?: string;
+    confirmed?: string;
+    error?: string;
+    success?: string;
+  };
   
   // Typography
-  fontFamily?: string;
-  fontSize?: {
-    xs?: string;
-    sm?: string;
-    base?: string;
-    lg?: string;
-    xl?: string;
+  typography?: {
+    fontFamily?: string;
+    fontSize?: {
+      xs?: string;
+      sm?: string;
+      base?: string;
+      lg?: string;
+      xl?: string;
+    };
+    fontWeight?: {
+      normal?: number;
+      medium?: number;
+      semibold?: number;
+      bold?: number;
+    };
   };
   
   // Spacing
@@ -59,7 +71,7 @@ export interface CalendarTheme {
   };
   
   // Shadows
-  shadow?: {
+  shadows?: {
     sm?: string;
     md?: string;
     lg?: string;
@@ -68,38 +80,50 @@ export interface CalendarTheme {
 
 // Default theme values
 export const defaultTheme: CalendarTheme = {
-  primary: '#3b82f6',
-  secondary: '#6b7280',
-  background: '#ffffff',
-  surface: '#f9fafb',
+  colors: {
+    primary: '#3b82f6',
+    secondary: '#6b7280',
+    background: '#ffffff',
+    surface: '#f9fafb',
+    
+    text: '#111827',
+    textSecondary: '#374151',
+    textMuted: '#6b7280',
+    
+    border: '#e5e7eb',
+    borderLight: '#f3f4f6',
+    
+    today: '#92400e',
+    todayBackground: '#fef3c7',
+    focus: '#3b82f6',
+    hover: '#f3f4f6',
+    
+    eventBackground: '#ffffff',
+    eventBorder: '#e5e7eb',
+    eventText: '#111827',
+    
+    tentative: '#92400e',
+    cancelled: '#dc2626',
+    confirmed: '#059669',
+    error: '#dc2626',
+    success: '#059669',
+  },
   
-  textPrimary: '#111827',
-  textSecondary: '#374151',
-  textMuted: '#6b7280',
-  
-  border: '#e5e7eb',
-  borderLight: '#f3f4f6',
-  
-  today: '#92400e',
-  todayBackground: '#fef3c7',
-  focus: '#3b82f6',
-  hover: '#f3f4f6',
-  
-  eventBackground: '#ffffff',
-  eventBorder: '#e5e7eb',
-  eventText: '#111827',
-  
-  tentative: '#92400e',
-  cancelled: '#dc2626',
-  confirmed: '#059669',
-  
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  fontSize: {
-    xs: '0.75rem',
-    sm: '0.875rem',
-    base: '1rem',
-    lg: '1.125rem',
-    xl: '1.25rem',
+  typography: {
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontSize: {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+    },
+    fontWeight: {
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+    },
   },
   
   spacing: {
@@ -116,7 +140,7 @@ export const defaultTheme: CalendarTheme = {
     lg: '8px',
   },
   
-  shadow: {
+  shadows: {
     sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
     md: '0 2px 4px rgba(0, 0, 0, 0.1)',
     lg: '0 4px 6px rgba(0, 0, 0, 0.1)',
@@ -130,27 +154,34 @@ export function mergeTheme(baseTheme: CalendarTheme, customTheme?: Partial<Calen
   return {
     ...baseTheme,
     ...customTheme,
-    fontSize: { ...baseTheme.fontSize, ...customTheme.fontSize },
+    colors: { ...baseTheme.colors, ...customTheme.colors },
+    typography: { 
+      ...baseTheme.typography, 
+      ...customTheme.typography,
+      fontSize: { ...baseTheme.typography?.fontSize, ...customTheme.typography?.fontSize },
+      fontWeight: { ...baseTheme.typography?.fontWeight, ...customTheme.typography?.fontWeight },
+    },
     spacing: { ...baseTheme.spacing, ...customTheme.spacing },
     borderRadius: { ...baseTheme.borderRadius, ...customTheme.borderRadius },
-    shadow: { ...baseTheme.shadow, ...customTheme.shadow },
+    shadows: { ...baseTheme.shadows, ...customTheme.shadows },
   };
 }
 
 export function generateCSSVariables(theme: CalendarTheme): Record<string, string> {
+  const colors = theme.colors || defaultTheme.colors!;
   return {
-    '--cal7-primary': theme.primary || defaultTheme.primary!,
-    '--cal7-secondary': theme.secondary || defaultTheme.secondary!,
-    '--cal7-background': theme.background || defaultTheme.background!,
-    '--cal7-surface': theme.surface || defaultTheme.surface!,
-    '--cal7-text-primary': theme.textPrimary || defaultTheme.textPrimary!,
-    '--cal7-text-secondary': theme.textSecondary || defaultTheme.textSecondary!,
-    '--cal7-text-muted': theme.textMuted || defaultTheme.textMuted!,
-    '--cal7-border': theme.border || defaultTheme.border!,
-    '--cal7-border-light': theme.borderLight || defaultTheme.borderLight!,
-    '--cal7-today': theme.today || defaultTheme.today!,
-    '--cal7-today-bg': theme.todayBackground || defaultTheme.todayBackground!,
-    '--cal7-focus': theme.focus || defaultTheme.focus!,
-    '--cal7-hover': theme.hover || defaultTheme.hover!,
+    '--cal7-primary': colors.primary || defaultTheme.colors!.primary!,
+    '--cal7-secondary': colors.secondary || defaultTheme.colors!.secondary!,
+    '--cal7-background': colors.background || defaultTheme.colors!.background!,
+    '--cal7-surface': colors.surface || defaultTheme.colors!.surface!,
+    '--cal7-text-primary': colors.text || defaultTheme.colors!.text!,
+    '--cal7-text-secondary': colors.textSecondary || defaultTheme.colors!.textSecondary!,
+    '--cal7-text-muted': colors.textMuted || defaultTheme.colors!.textMuted!,
+    '--cal7-border': colors.border || defaultTheme.colors!.border!,
+    '--cal7-border-light': colors.borderLight || defaultTheme.colors!.borderLight!,
+    '--cal7-today': colors.today || defaultTheme.colors!.today!,
+    '--cal7-today-bg': colors.todayBackground || defaultTheme.colors!.todayBackground!,
+    '--cal7-focus': colors.focus || defaultTheme.colors!.focus!,
+    '--cal7-hover': colors.hover || defaultTheme.colors!.hover!,
   };
 }

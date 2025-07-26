@@ -1,5 +1,8 @@
 /* Cal7 Calendar Component Styles */
 
+/* Import component-specific styles */
+@import './add-to-calendar.css';
+
 /* Error States */
 .cal7-error {
   border: 1px solid #e5e7eb;

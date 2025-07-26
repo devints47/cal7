@@ -2,6 +2,7 @@
 export { Calendar } from './components/Calendar';
 export { CalendarClient } from './components/CalendarClient';
 export { EventModal } from './components/EventModal';
+export { default as AddToCalendarButton } from './components/AddToCalendarButton';
 
 // Core type exports
 export type { 
@@ -68,3 +69,12 @@ export {
   filterEventsForWeek,
   groupEventsByDay
 } from './utils/google-calendar-api';
+
+export {
+  detectDeviceType,
+  isTouchDevice,
+  getDeviceInfo,
+  isMobileDevice,
+  isAppleDevice,
+  getCalendarAppName
+} from './utils/device-detection';

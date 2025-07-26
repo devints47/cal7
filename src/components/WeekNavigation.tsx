@@ -21,14 +21,14 @@ interface WeekNavigationProps {
  * Includes previous/next buttons and displays the current week range.
  */
 export function WeekNavigation({
-  currentWeek,
+  currentWeek: _currentWeek,
   onWeekChange,
   onPreviousWeek,
   onNextWeek,
   weekRangeString,
   className = '',
-  theme,
-  locale = 'en-US',
+  theme: _theme,
+  locale: _locale = 'en-US',
 }: WeekNavigationProps) {
   
   // Keyboard navigation handler

@@ -3,13 +3,12 @@ import type { CalendarTheme } from './theme';
 
 // Main Calendar Server Component props
 export interface CalendarProps {
-  calendarId: string;
   revalidate?: number; // seconds, default 300
   timeZone?: string;
   locale?: string;
   className?: string;
   theme?: CalendarTheme;
-  fetcher?: (calendarId: string) => Promise<CalendarEvent[]>;
+  fetcher?: () => Promise<CalendarEvent[]>;
   onError?: (error: Error) => void;
 }
 
@@ -48,7 +47,7 @@ export interface AddToCalendarButtonProps {
   event: CalendarEvent;
   userAgent?: string;
   className?: string;
-  showDropdown?: boolean;
+  showLabel?: boolean;
 }
 
 // Calendar View props (for the main calendar grid)

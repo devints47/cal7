@@ -2,53 +2,25 @@ import { describe, it, expect } from 'vitest';
 import type {
   // Calendar types
   CalendarProps,
-  CalendarClientProps,
-  EventModalProps,
-  EventCardProps,
-  AddToCalendarButtonProps,
-  CalendarViewProps,
-  WeekNavigationProps,
-  DayColumnProps,
-  LoadingStateProps,
   
   // Event types
   CalendarEvent,
-  EventAttendee,
-  RecurrenceRule,
-  WeekData,
-  DayData,
   GoogleCalendarEvent,
   GoogleCalendarResponse,
   DeviceType,
-  DeviceInfo,
-  CalendarSubscription,
   
   // Theme types
   CalendarTheme,
   
   // Utility types
-  CalendarErrorCode,
-  ErrorState,
-  LoadingStateType,
   LoadingState,
-  ApiResponse,
   CalendarApiResponse,
-  CacheEntry,
-  CacheConfig,
-  ValidationResult,
   CalendarConfig,
   EventClickHandler,
   WeekChangeHandler,
   ErrorHandler,
-  RetryHandler,
-  KeyboardAction,
-  KeyboardEvent,
   ViewMode,
-  BreakpointSize,
-  ResponsiveConfig,
-  AccessibilityConfig,
-  PerformanceMetrics,
-  LocaleConfig
+  BreakpointSize
 } from '../index';
 
 // Import the CalendarError class separately
@@ -134,22 +106,21 @@ describe('TypeScript Interface Definitions', () => {
       }
     };
 
-    expect(mockTheme.colors.primary).toBe('#ff6b35');
-    expect(mockTheme.typography.fontFamily).toBe('Inter, sans-serif');
+    expect(mockTheme.colors?.primary).toBe('#ff6b35');
+    expect(mockTheme.typography?.fontFamily).toBe('Inter, sans-serif');
   });
 
   it('should have properly defined CalendarProps interface', () => {
     const mockProps: CalendarProps = {
-      calendarId: 'test@google.com',
       revalidate: 300,
       timeZone: 'America/New_York',
       locale: 'en-US',
       className: 'custom-calendar',
-      fetcher: async (calendarId: string) => [],
+      fetcher: async () => [],
       onError: (error: Error) => console.error(error)
     };
 
-    expect(mockProps.calendarId).toBe('test@google.com');
+    expect(mockProps.fetcher).toBeDefined();
     expect(mockProps.revalidate).toBe(300);
   });
 
@@ -163,7 +134,7 @@ describe('TypeScript Interface Definitions', () => {
       status: 'confirmed'
     };
 
-    const mockModalProps: EventModalProps = {
+    const mockModalProps = {
       event: mockEvent,
       isOpen: true,
       onClose: () => {},

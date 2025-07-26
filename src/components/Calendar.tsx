@@ -16,10 +16,9 @@ import type { CalendarEvent } from '../types/events';
  * - Environment variable validation with helpful error messages
  * - Data sanitization using dompurify
  * - Graceful error handling with user-friendly messages
+ * - Uses hardcoded public calendar ID (no configuration needed)
  */
 export async function Calendar({
-  calendarId,
-  revalidate = 300, // 5 minutes default
   timeZone = 'UTC',
   locale = 'en-US',
   className,
@@ -43,331 +42,190 @@ export async function Calendar({
     return (
       <div className={`cal7-error cal7-error--missing-api-key ${className || ''}`}>
         <div className="cal7-error__content">
-          <h3 className="cal7-error__title">Configuration Error</h3>
+          <h3 className="cal7-error__title">API Key Required</h3>
           <p className="cal7-error__message">
-            Missing Google Calendar API key. Please set the <code>GOOGLE_CALENDAR_API_KEY</code> environment variable.
+            Google Calendar API key is required to display calendar events.
           </p>
           <div className="cal7-error__help">
             <p>To fix this issue:</p>
             <ol>
               <li>Get a Google Calendar API key from the Google Cloud Console</li>
-              <li>Add it to your environment variables: <code>GOOGLE_CALENDAR_API_KEY=your_api_key_here</code></li>
-              <li>Restart your development server</li>
+              <li>Set the <code>GOOGLE_CALENDAR_API_KEY</code> environment variable</li>
+              <li>Restart your application</li>
             </ol>
-            <a 
-              href="https://developers.google.com/calendar/api/quickstart" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="cal7-error__link"
-            >
-              View Setup Guide →
-            </a>
           </div>
         </div>
       </div>
     );
   }
-  
-  // Validate calendar ID format
-  if (!calendarId || typeof calendarId !== 'string') {
-    const error = new CalendarError(
-      'Calendar ID is required and must be a valid string',
-      'INVALID_CALENDAR_ID'
-    );
-    
-    if (onError) {
-      onError(error);
-    }
-    
-    return (
-      <div className={`cal7-error cal7-error--invalid-calendar-id ${className || ''}`}>
-        <div className="cal7-error__content">
-          <h3 className="cal7-error__title">Invalid Calendar ID</h3>
-          <p className="cal7-error__message">
-            Please provide a valid Google Calendar ID (usually an email address).
-          </p>
-          <p className="cal7-error__example">
-            Example: <code>your-calendar@gmail.com</code> or <code>your-calendar@group.calendar.google.com</code>
-          </p>
-        </div>
-      </div>
-    );
-  }
-  
+
+  // Fetch calendar events
+  let events: CalendarEvent[] = [];
+  let calendarError: CalendarError | null = null;
+
   try {
-    let events: CalendarEvent[];
-    
     if (fetcher) {
       // Use custom fetcher if provided
-      events = await fetcher(calendarId);
+      events = await fetcher();
     } else {
       // Use built-in secure fetcher with Next.js caching
-      events = await fetchCalendarEventsWithCache(calendarId, apiKey, revalidate);
+      events = await fetchCalendarEventsWithCache(apiKey);
     }
-    
-    // Pass sanitized data to client component
-    return (
-      <CalendarClient
-        events={events}
-        className={className}
-        theme={theme}
-        locale={locale}
-        timeZone={timeZone}
-      />
-    );
-    
   } catch (error) {
-    const calendarError = error instanceof CalendarError 
-      ? error 
-      : new CalendarError(
-          `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-          'UNKNOWN_ERROR',
-          error instanceof Error ? error : undefined
-        );
+    console.error('Calendar fetch error:', error);
+    
+    if (error instanceof CalendarError) {
+      calendarError = error;
+    } else {
+      calendarError = new CalendarError(
+        'Failed to load calendar events. Please try again later.',
+        'UNKNOWN_ERROR',
+        error instanceof Error ? error : undefined
+      );
+    }
     
     if (onError) {
       onError(calendarError);
     }
-    
-    return <CalendarErrorFallback error={calendarError} calendarId={calendarId} />;
   }
+
+  // Render error state if we have an error
+  if (calendarError) {
+    return <CalendarErrorFallback error={calendarError} />;
+  }
+
+  // Render the calendar with events
+  return (
+    <CalendarClient
+      events={events}
+      className={className}
+      theme={theme}
+      locale={locale}
+      timeZone={timeZone}
+    />
+  );
 }
 
 /**
  * Fetches calendar events with Next.js caching
- * 
- * Uses Next.js fetch with revalidate parameter for server-side caching.
- * Multiple Calendar instances within the same request will share cached data.
+ * Uses the hardcoded public calendar ID from the service
  */
 async function fetchCalendarEventsWithCache(
-  calendarId: string,
   apiKey: string,
-  revalidate: number
 ): Promise<CalendarEvent[]> {
-  // Build the Google Calendar API URL
-  const baseUrl = 'https://www.googleapis.com/calendar/v3/calendars';
-  const encodedCalendarId = encodeURIComponent(calendarId);
-  
-  // Calculate date range: 6 months past to 6 months future
-  const now = new Date();
-  const sixMonthsAgo = new Date(now);
-  sixMonthsAgo.setMonth(now.getMonth() - 6);
-  
-  const sixMonthsFromNow = new Date(now);
-  sixMonthsFromNow.setMonth(now.getMonth() + 6);
-  
-  const params = new URLSearchParams({
-    key: apiKey,
-    singleEvents: 'true', // Expand recurring events into individual instances
-    orderBy: 'startTime',
-    timeMin: sixMonthsAgo.toISOString(),
-    timeMax: sixMonthsFromNow.toISOString(),
-    maxResults: '1000', // Maximum allowed by Google Calendar API
-  });
-  
-  const url = `${baseUrl}/${encodedCalendarId}/events?${params.toString()}`;
-  
   try {
-    // Use Next.js fetch with caching
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'cal7-package/1.0.0',
-      },
-      next: { 
-        revalidate, // Cache for specified seconds
-        tags: [`calendar-${calendarId}`] // Tag for cache invalidation
-      },
-    } as RequestInit & { next?: { revalidate: number; tags: string[] } });
-    
-    if (!response.ok) {
-      // Handle specific HTTP error codes
-      switch (response.status) {
-        case 401:
-          throw new CalendarError(
-            'Invalid API key or insufficient permissions. Please check your GOOGLE_CALENDAR_API_KEY.',
-            'AUTH_ERROR'
-          );
-        case 403:
-          throw new CalendarError(
-            'Access forbidden. Please check that your API key has Calendar API access enabled and the calendar is public.',
-            'PERMISSION_ERROR'
-          );
-        case 404:
-          throw new CalendarError(
-            `Calendar not found: ${calendarId}. Please check that the calendar ID is correct and the calendar is public.`,
-            'INVALID_CALENDAR_ID'
-          );
-        default:
-          throw new CalendarError(
-            `HTTP ${response.status}: ${response.statusText}`,
-            'NETWORK_ERROR'
-          );
-      }
-    }
-    
-    const rawData = await response.json();
-    
-    // Check for API-level errors
-    if (rawData.error) {
-      throw new CalendarError(
-        `Google Calendar API error: ${rawData.error.message}`,
-        rawData.error.code === 401 ? 'AUTH_ERROR' : 'UNKNOWN_ERROR'
-      );
-    }
-    
-    // Process and sanitize events using existing utility
-    const events: CalendarEvent[] = [];
-    
-    if (rawData.items && Array.isArray(rawData.items)) {
-      for (const googleEvent of rawData.items) {
-        try {
-          // The fetchCalendarEvents utility already handles sanitization
-          const { transformGoogleCalendarEvent } = await import('../utils/google-calendar-api');
-          const transformedEvent = transformGoogleCalendarEvent(googleEvent, calendarId);
-          events.push(transformedEvent);
-        } catch (error) {
-          // Log individual event transformation errors but continue processing
-          console.warn(`Failed to transform event ${googleEvent.id}:`, error);
-          continue;
-        }
-      }
-    }
-    
+    // Use the service function which handles the calendar ID internally
+    const events = await fetchCalendarEvents(apiKey);
     return events;
-    
   } catch (error) {
     if (error instanceof CalendarError) {
       throw error;
     }
     
-    // Handle network and other unexpected errors
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new CalendarError(
-        'Network error: Unable to connect to Google Calendar API. Please check your internet connection.',
-        'NETWORK_ERROR',
-        error
-      );
-    }
-    
     throw new CalendarError(
-      `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      'UNKNOWN_ERROR',
+      'Failed to fetch calendar events',
+      'NETWORK_ERROR',
       error instanceof Error ? error : undefined
     );
   }
 }
 
 /**
- * Error fallback component for calendar failures
+ * Error fallback component for calendar errors
  */
 function CalendarErrorFallback({ 
-  error, 
-  calendarId 
+  error
 }: { 
   error: CalendarError; 
-  calendarId: string;
 }) {
   const getErrorContent = () => {
     switch (error.code) {
-      case 'AUTH_ERROR':
+      case 'MISSING_API_KEY':
         return {
-          title: 'Authentication Error',
-          message: 'Invalid API key or insufficient permissions.',
+          title: 'API Key Required',
+          message: 'Google Calendar API key is required to display calendar events.',
           help: (
             <div>
               <p>To fix this issue:</p>
               <ol>
-                <li>Verify your Google Calendar API key is correct</li>
-                <li>Ensure the API key has Calendar API access enabled</li>
-                <li>Check that the calendar is public or shared appropriately</li>
+                <li>Get a Google Calendar API key from the Google Cloud Console</li>
+                <li>Set the <code>GOOGLE_CALENDAR_API_KEY</code> environment variable</li>
+                <li>Restart your application</li>
               </ol>
+              <a 
+                href="https://developers.google.com/calendar/api/quickstart" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="cal7-error__link"
+              >
+                View Google Calendar API Documentation
+              </a>
             </div>
-          )
+          ),
         };
-      
-      case 'PERMISSION_ERROR':
-        return {
-          title: 'Permission Error',
-          message: 'Access to the calendar is forbidden.',
-          help: (
-            <div>
-              <p>To fix this issue:</p>
-              <ol>
-                <li>Make sure the calendar is set to public</li>
-                <li>Verify your API key has the necessary permissions</li>
-                <li>Check the calendar sharing settings</li>
-              </ol>
-            </div>
-          )
-        };
-      
-      case 'INVALID_CALENDAR_ID':
-        return {
-          title: 'Calendar Not Found',
-          message: `The calendar "${calendarId}" could not be found.`,
-          help: (
-            <div>
-              <p>Please check:</p>
-              <ol>
-                <li>The calendar ID is spelled correctly</li>
-                <li>The calendar exists and is accessible</li>
-                <li>The calendar is set to public if using a public API key</li>
-              </ol>
-            </div>
-          )
-        };
-      
+        
       case 'NETWORK_ERROR':
         return {
           title: 'Connection Error',
-          message: 'Unable to connect to Google Calendar API.',
+          message: 'Unable to connect to Google Calendar. Please check your internet connection and try again.',
           help: (
             <div>
-              <p>This might be a temporary issue. Try:</p>
-              <ol>
-                <li>Refreshing the page</li>
-                <li>Checking your internet connection</li>
-                <li>Waiting a moment and trying again</li>
-              </ol>
+              <p>This error can occur due to:</p>
+              <ul>
+                <li>Network connectivity issues</li>
+                <li>Google Calendar API service outage</li>
+                <li>Firewall or proxy blocking the request</li>
+              </ul>
             </div>
-          )
+          ),
         };
-      
+        
+      case 'PERMISSION_ERROR':
+        return {
+          title: 'Permission Denied',
+          message: 'The API key does not have permission to access the calendar.',
+          help: (
+            <div>
+              <p>Please check:</p>
+              <ul>
+                <li>The API key is valid and active</li>
+                <li>The Google Calendar API is enabled in your Google Cloud project</li>
+                <li>The calendar is set to public</li>
+              </ul>
+            </div>
+          ),
+        };
+        
       default:
         return {
           title: 'Calendar Error',
-          message: error.message || 'An unexpected error occurred.',
+          message: error.message || 'An unexpected error occurred while loading the calendar.',
           help: (
             <div>
-              <p>If this problem persists, please:</p>
-              <ol>
-                <li>Check the browser console for more details</li>
-                <li>Verify your calendar configuration</li>
-                <li>Contact support if needed</li>
-              </ol>
+              <p>Please try refreshing the page. If the problem persists, contact support.</p>
             </div>
-          )
+          ),
         };
     }
   };
-  
+
   const { title, message, help } = getErrorContent();
-  
+  const errorClass = `cal7-error--${error.code.toLowerCase().replace('_', '-')}`;
+
   return (
-    <div className={`cal7-error cal7-error--${error.code.toLowerCase().replace('_', '-')}`}>
+    <div className={`cal7-error ${errorClass}`}>
       <div className="cal7-error__content">
         <h3 className="cal7-error__title">{title}</h3>
         <p className="cal7-error__message">{message}</p>
         <div className="cal7-error__help">{help}</div>
+        
+        {/* Debug information in development */}
         {process.env.NODE_ENV === 'development' && (
           <details className="cal7-error__debug">
             <summary>Debug Information</summary>
             <pre className="cal7-error__debug-info">
               {JSON.stringify({
                 errorCode: error.code,
-                calendarId,
                 originalError: error.originalError?.message,
                 stack: error.stack,
               }, null, 2)}
