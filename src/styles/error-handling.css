@@ -1,0 +1,760 @@
+/* Error Boundary Styles */
+.cal7-error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--cal7-error-bg, #fef2f2);
+  border: 1px solid var(--cal7-error-border, #fecaca);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+  color: var(--cal7-error-text, #991b1b);
+}
+
+.cal7-error-boundary__content {
+  text-align: center;
+  max-width: 32rem;
+}
+
+.cal7-error-boundary__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--cal7-error-icon, #dc2626);
+}
+
+.cal7-error-boundary__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: var(--cal7-error-title, #991b1b);
+}
+
+.cal7-error-boundary__message {
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  color: var(--cal7-error-text, #7f1d1d);
+}
+
+.cal7-error-boundary__retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--cal7-error-button-bg, #dc2626);
+  color: var(--cal7-error-button-text, #ffffff);
+  border: none;
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cal7-error-boundary__retry-button:hover {
+  background-color: var(--cal7-error-button-hover, #b91c1c);
+}
+
+.cal7-error-boundary__retry-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cal7-error-boundary__max-retries {
+  margin: 1rem 0 0 0;
+  font-size: 0.875rem;
+  color: var(--cal7-error-muted, #6b7280);
+}
+
+.cal7-error-boundary__debug {
+  margin-top: 1.5rem;
+  text-align: left;
+  background-color: var(--cal7-debug-bg, #f3f4f6);
+  border: 1px solid var(--cal7-debug-border, #d1d5db);
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  overflow: hidden;
+}
+
+.cal7-error-boundary__debug-summary {
+  padding: 0.75rem 1rem;
+  background-color: var(--cal7-debug-header-bg, #e5e7eb);
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.cal7-error-boundary__debug-content {
+  padding: 1rem;
+}
+
+.cal7-error-boundary__debug-section {
+  margin-bottom: 1rem;
+}
+
+.cal7-error-boundary__debug-section:last-child {
+  margin-bottom: 0;
+}
+
+.cal7-error-boundary__debug-section h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cal7-debug-heading, #374151);
+}
+
+.cal7-error-boundary__debug-section pre {
+  margin: 0;
+  padding: 0.75rem;
+  background-color: var(--cal7-debug-code-bg, #1f2937);
+  color: var(--cal7-debug-code-text, #f9fafb);
+  border-radius: var(--cal7-border-radius-sm, 0.25rem);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Calendar Error Boundary */
+.cal7-calendar-error {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.cal7-calendar-error__content {
+  background-color: var(--cal7-surface, #ffffff);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+  box-shadow: var(--cal7-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+.cal7-calendar-error__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--cal7-warning, #f59e0b);
+}
+
+.cal7-calendar-error__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  color: var(--cal7-text, #1f2937);
+}
+
+.cal7-calendar-error__message {
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  line-height: 1.6;
+  color: var(--cal7-text-secondary, #6b7280);
+}
+
+.cal7-calendar-error__retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--cal7-primary, #f59e0b);
+  color: var(--cal7-primary-text, #ffffff);
+  border: none;
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0 auto;
+  display: flex;
+}
+
+.cal7-calendar-error__retry-button:hover {
+  background-color: var(--cal7-primary-hover, #d97706);
+}
+
+.cal7-calendar-error__help {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--cal7-text-muted, #9ca3af);
+}
+
+/* Modal Error Boundary */
+.cal7-modal-error-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.cal7-modal-error {
+  background-color: var(--cal7-surface, #ffffff);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+  max-width: 28rem;
+  width: 100%;
+  box-shadow: var(--cal7-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+}
+
+.cal7-modal-error__content {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.cal7-modal-error__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--cal7-warning, #f59e0b);
+}
+
+.cal7-modal-error__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: var(--cal7-text, #1f2937);
+}
+
+.cal7-modal-error__message {
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  color: var(--cal7-text-secondary, #6b7280);
+}
+
+.cal7-modal-error__close-button {
+  padding: 0.5rem 1.5rem;
+  background-color: var(--cal7-text, #1f2937);
+  color: var(--cal7-surface, #ffffff);
+  border: none;
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cal7-modal-error__close-button:hover {
+  background-color: var(--cal7-text-hover, #374151);
+}
+
+/* Error State Components */
+.cal7-error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.cal7-error-state__content {
+  max-width: 32rem;
+}
+
+.cal7-error-state__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.cal7-error-state__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+}
+
+.cal7-error-state__message {
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.cal7-error-state__help {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--cal7-help-bg, #f9fafb);
+  border: 1px solid var(--cal7-help-border, #e5e7eb);
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cal7-error-state__help p {
+  margin: 0 0 0.75rem 0;
+}
+
+.cal7-error-state__help p:last-child {
+  margin-bottom: 0;
+}
+
+.cal7-error-state__help ul,
+.cal7-error-state__help ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.cal7-error-state__help li {
+  margin-bottom: 0.25rem;
+}
+
+.cal7-error-state__help code {
+  background-color: var(--cal7-code-bg, #e5e7eb);
+  color: var(--cal7-code-text, #1f2937);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--cal7-border-radius-sm, 0.25rem);
+  font-size: 0.875em;
+}
+
+.cal7-error-state__link {
+  color: var(--cal7-link, #3b82f6);
+  text-decoration: underline;
+}
+
+.cal7-error-state__link:hover {
+  color: var(--cal7-link-hover, #2563eb);
+}
+
+.cal7-error-state__retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cal7-error-state__retry-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cal7-error-state__retry-icon--spinning {
+  animation: cal7-spin 1s linear infinite;
+}
+
+/* Error State Variants */
+.cal7-error-state--network {
+  background-color: var(--cal7-error-network-bg, #fef2f2);
+  border: 1px solid var(--cal7-error-network-border, #fecaca);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+}
+
+.cal7-error-state--network .cal7-error-state__icon {
+  color: var(--cal7-error-network, #dc2626);
+}
+
+.cal7-error-state--network .cal7-error-state__title {
+  color: var(--cal7-error-network-title, #991b1b);
+}
+
+.cal7-error-state--network .cal7-error-state__message {
+  color: var(--cal7-error-network-text, #7f1d1d);
+}
+
+.cal7-error-state--network .cal7-error-state__retry-button {
+  background-color: var(--cal7-error-network, #dc2626);
+  color: var(--cal7-error-network-button-text, #ffffff);
+}
+
+.cal7-error-state--network .cal7-error-state__retry-button:hover {
+  background-color: var(--cal7-error-network-hover, #b91c1c);
+}
+
+.cal7-error-state--auth {
+  background-color: var(--cal7-error-auth-bg, #fffbeb);
+  border: 1px solid var(--cal7-error-auth-border, #fed7aa);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+}
+
+.cal7-error-state--auth .cal7-error-state__icon {
+  color: var(--cal7-error-auth, #f59e0b);
+}
+
+.cal7-error-state--auth .cal7-error-state__title {
+  color: var(--cal7-error-auth-title, #92400e);
+}
+
+.cal7-error-state--auth .cal7-error-state__message {
+  color: var(--cal7-error-auth-text, #78350f);
+}
+
+.cal7-error-state--auth .cal7-error-state__retry-button {
+  background-color: var(--cal7-error-auth, #f59e0b);
+  color: var(--cal7-error-auth-button-text, #ffffff);
+}
+
+.cal7-error-state--auth .cal7-error-state__retry-button:hover {
+  background-color: var(--cal7-error-auth-hover, #d97706);
+}
+
+.cal7-error-state--config {
+  background-color: var(--cal7-error-config-bg, #f0f9ff);
+  border: 1px solid var(--cal7-error-config-border, #bae6fd);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+}
+
+.cal7-error-state--config .cal7-error-state__icon {
+  color: var(--cal7-error-config, #0284c7);
+}
+
+.cal7-error-state--config .cal7-error-state__title {
+  color: var(--cal7-error-config-title, #0c4a6e);
+}
+
+.cal7-error-state--config .cal7-error-state__message {
+  color: var(--cal7-error-config-text, #164e63);
+}
+
+.cal7-error-state--config .cal7-error-state__retry-button {
+  background-color: var(--cal7-error-config, #0284c7);
+  color: var(--cal7-error-config-button-text, #ffffff);
+}
+
+.cal7-error-state--config .cal7-error-state__retry-button:hover {
+  background-color: var(--cal7-error-config-hover, #0369a1);
+}
+
+.cal7-error-state--data {
+  background-color: var(--cal7-error-data-bg, #fdf4ff);
+  border: 1px solid var(--cal7-error-data-border, #e9d5ff);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+}
+
+.cal7-error-state--data .cal7-error-state__icon {
+  color: var(--cal7-error-data, #a855f7);
+}
+
+.cal7-error-state--data .cal7-error-state__title {
+  color: var(--cal7-error-data-title, #6b21a8);
+}
+
+.cal7-error-state--data .cal7-error-state__message {
+  color: var(--cal7-error-data-text, #581c87);
+}
+
+.cal7-error-state--data .cal7-error-state__retry-button {
+  background-color: var(--cal7-error-data, #a855f7);
+  color: var(--cal7-error-data-button-text, #ffffff);
+}
+
+.cal7-error-state--data .cal7-error-state__retry-button:hover {
+  background-color: var(--cal7-error-data-hover, #9333ea);
+}
+
+.cal7-error-state--generic {
+  background-color: var(--cal7-error-generic-bg, #f9fafb);
+  border: 1px solid var(--cal7-error-generic-border, #d1d5db);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+}
+
+.cal7-error-state--generic .cal7-error-state__icon {
+  color: var(--cal7-error-generic, #6b7280);
+}
+
+.cal7-error-state--generic .cal7-error-state__title {
+  color: var(--cal7-error-generic-title, #374151);
+}
+
+.cal7-error-state--generic .cal7-error-state__message {
+  color: var(--cal7-error-generic-text, #4b5563);
+}
+
+.cal7-error-state--generic .cal7-error-state__retry-button {
+  background-color: var(--cal7-error-generic, #6b7280);
+  color: var(--cal7-error-generic-button-text, #ffffff);
+}
+
+.cal7-error-state--generic .cal7-error-state__retry-button:hover {
+  background-color: var(--cal7-error-generic-hover, #4b5563);
+}
+
+/* Calendar Error Container */
+.cal7-calendar-error-container {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.cal7-calendar-error-wrapper {
+  background-color: var(--cal7-surface, #ffffff);
+  border-radius: var(--cal7-border-radius-lg, 0.5rem);
+  box-shadow: var(--cal7-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+.cal7-calendar-error-state {
+  padding: 3rem 2rem;
+}
+
+/* Inline Error Message */
+.cal7-inline-error {
+  margin: 0.5rem 0;
+}
+
+.cal7-inline-error__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: var(--cal7-error-inline-bg, #fef2f2);
+  border: 1px solid var(--cal7-error-inline-border, #fecaca);
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+}
+
+.cal7-inline-error__icon {
+  color: var(--cal7-error-inline-icon, #dc2626);
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.cal7-inline-error__message {
+  margin: 0;
+  flex: 1;
+  color: var(--cal7-error-inline-text, #991b1b);
+  font-size: 0.875rem;
+}
+
+.cal7-inline-error__retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--cal7-error-inline-button, #dc2626);
+  color: var(--cal7-error-inline-button-text, #ffffff);
+  border: none;
+  border-radius: var(--cal7-border-radius-sm, 0.25rem);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+}
+
+.cal7-inline-error__retry-button:hover {
+  background-color: var(--cal7-error-inline-button-hover, #b91c1c);
+}
+
+.cal7-inline-error__retry-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cal7-inline-error__retry-icon--spinning {
+  animation: cal7-spin 1s linear infinite;
+}
+
+/* Empty State */
+.cal7-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.cal7-empty-state__content {
+  max-width: 28rem;
+}
+
+.cal7-empty-state__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--cal7-empty-icon, #9ca3af);
+}
+
+.cal7-empty-state__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: var(--cal7-empty-title, #374151);
+}
+
+.cal7-empty-state__message {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--cal7-empty-text, #6b7280);
+}
+
+/* Connection Status */
+.cal7-connection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--cal7-border-radius-full, 9999px);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.cal7-connection-status--online {
+  background-color: var(--cal7-success-bg, #dcfce7);
+  color: var(--cal7-success-text, #166534);
+}
+
+.cal7-connection-status--offline {
+  background-color: var(--cal7-error-bg, #fef2f2);
+  color: var(--cal7-error-text, #991b1b);
+}
+
+.cal7-connection-status__indicator {
+  display: flex;
+  align-items: center;
+}
+
+.cal7-connection-status__text {
+  font-weight: 500;
+}
+
+.cal7-connection-status__time {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  font-weight: 400;
+}
+
+/* Development Warning */
+.cal7-dev-warning {
+  margin: 0.5rem 0;
+  border-radius: var(--cal7-border-radius-md, 0.375rem);
+  border: 1px solid;
+}
+
+.cal7-dev-warning--warning {
+  background-color: var(--cal7-warning-bg, #fffbeb);
+  border-color: var(--cal7-warning-border, #fed7aa);
+  color: var(--cal7-warning-text, #92400e);
+}
+
+.cal7-dev-warning--info {
+  background-color: var(--cal7-info-bg, #eff6ff);
+  border-color: var(--cal7-info-border, #bfdbfe);
+  color: var(--cal7-info-text, #1e40af);
+}
+
+.cal7-dev-warning--error {
+  background-color: var(--cal7-error-bg, #fef2f2);
+  border-color: var(--cal7-error-border, #fecaca);
+  color: var(--cal7-error-text, #991b1b);
+}
+
+.cal7-dev-warning__content {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+}
+
+.cal7-dev-warning__icon {
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.cal7-dev-warning__message {
+  margin: 0;
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cal7-dev-warning__dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: 0.75rem;
+  border-radius: var(--cal7-border-radius-sm, 0.25rem);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.cal7-dev-warning__dismiss:hover {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes cal7-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .cal7-error-boundary,
+  .cal7-error-state {
+    padding: 1.5rem 1rem;
+  }
+  
+  .cal7-error-boundary__content,
+  .cal7-error-state__content {
+    max-width: none;
+  }
+  
+  .cal7-calendar-error-container {
+    padding: 1rem;
+  }
+  
+  .cal7-calendar-error-state {
+    padding: 2rem 1.5rem;
+  }
+  
+  .cal7-inline-error__content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .cal7-inline-error__retry-button {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+  
+  .cal7-dev-warning__content {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .cal7-dev-warning__dismiss {
+    align-self: flex-end;
+    margin-left: 0;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .cal7-error-boundary,
+  .cal7-error-state,
+  .cal7-inline-error__content {
+    border-width: 2px;
+  }
+  
+  .cal7-error-boundary__retry-button,
+  .cal7-error-state__retry-button,
+  .cal7-inline-error__retry-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .cal7-error-state__retry-icon--spinning,
+  .cal7-inline-error__retry-icon--spinning {
+    animation: none;
+  }
+  
+  .cal7-error-boundary__retry-button,
+  .cal7-error-state__retry-button,
+  .cal7-inline-error__retry-button,
+  .cal7-modal-error__close-button,
+  .cal7-calendar-error__retry-button {
+    transition: none;
+  }
+}

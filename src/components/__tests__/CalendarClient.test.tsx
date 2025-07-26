@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { CalendarClient } from '../CalendarClient';
+import { ThemeProvider } from '../ThemeProvider';
 import type { CalendarEvent } from '../../types/events';
 
 // Mock the google-calendar-api utilities
@@ -150,6 +151,15 @@ describe('CalendarClient', () => {
     events: mockEvents,
     locale: 'en-US',
     timeZone: 'UTC',
+  };
+
+  // Helper function to render with ThemeProvider
+  const renderWithTheme = (component: React.ReactElement) => {
+    return render(
+      <ThemeProvider>
+        {component}
+      </ThemeProvider>
+    );
   };
 
   beforeEach(() => {

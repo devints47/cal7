@@ -1,6 +1,10 @@
 import { fetchCalendarEvents } from '../utils/google-calendar-api';
 import { CalendarClient } from './CalendarClient';
 import { CalendarError } from '../types/utils';
+import { CalendarErrorBoundary } from './CalendarErrorBoundary';
+import { CalendarErrorState, DevelopmentWarning } from './ErrorStates';
+import { withRetry, DEFAULT_RETRY_CONFIG } from '../utils/retry';
+import { ThemeProvider } from './ThemeProvider';
 import type { CalendarProps } from '../types/calendar';
 import type { CalendarEvent } from '../types/events';
 
@@ -15,7 +19,8 @@ import type { CalendarEvent } from '../types/events';
  * - Next.js caching with configurable revalidation
  * - Environment variable validation with helpful error messages
  * - Data sanitization using dompurify
- * - Graceful error handling with user-friendly messages
+ * - Comprehensive error handling with retry functionality
+ * - Development-time configuration warnings
  * - Uses hardcoded public calendar ID (no configuration needed)
  */
 export async function Calendar({
@@ -23,11 +28,26 @@ export async function Calendar({
   locale = 'en-US',
   className,
   theme,
+  darkTheme,
+  mode = 'light',
+  classPrefix = 'cal7',
   fetcher,
   onError,
 }: CalendarProps) {
-  // Environment variable validation
+  // Environment variable validation with development warnings
   const apiKey = process.env.GOOGLE_CALENDAR_API_KEY;
+  const developmentWarnings: string[] = [];
+  
+  // Check for common configuration issues in development
+  if (process.env.NODE_ENV === 'development') {
+    if (!apiKey) {
+      developmentWarnings.push('GOOGLE_CALENDAR_API_KEY environment variable is not set');
+    } else if (!apiKey.startsWith('AIza')) {
+      developmentWarnings.push('GOOGLE_CALENDAR_API_KEY does not appear to be a valid Google API key format');
+    } else if (apiKey.length !== 39) {
+      developmentWarnings.push('GOOGLE_CALENDAR_API_KEY length is unexpected (should be 39 characters)');
+    }
+  }
   
   if (!apiKey) {
     const error = new CalendarError(
@@ -40,36 +60,39 @@ export async function Calendar({
     }
     
     return (
-      <div className={`cal7-error cal7-error--missing-api-key ${className || ''}`}>
-        <div className="cal7-error__content">
-          <h3 className="cal7-error__title">API Key Required</h3>
-          <p className="cal7-error__message">
-            Google Calendar API key is required to display calendar events.
-          </p>
-          <div className="cal7-error__help">
-            <p>To fix this issue:</p>
-            <ol>
-              <li>Get a Google Calendar API key from the Google Cloud Console</li>
-              <li>Set the <code>GOOGLE_CALENDAR_API_KEY</code> environment variable</li>
-              <li>Restart your application</li>
-            </ol>
-          </div>
-        </div>
+      <div className={className}>
+        {developmentWarnings.map((warning, index) => (
+          <DevelopmentWarning
+            key={index}
+            message={warning}
+            type="error"
+          />
+        ))}
+        <CalendarErrorState error={error} />
       </div>
     );
   }
 
-  // Fetch calendar events
+  // Fetch calendar events with retry functionality
   let events: CalendarEvent[] = [];
   let calendarError: CalendarError | null = null;
 
   try {
     if (fetcher) {
-      // Use custom fetcher if provided
-      events = await fetcher();
+      // Use custom fetcher if provided, with retry wrapper
+      events = await withRetry(
+        () => fetcher(),
+        {
+          ...DEFAULT_RETRY_CONFIG,
+          maxAttempts: 2, // Reduce retries for custom fetchers
+        }
+      );
     } else {
-      // Use built-in secure fetcher with Next.js caching
-      events = await fetchCalendarEventsWithCache(apiKey);
+      // Use built-in secure fetcher with Next.js caching and retry
+      events = await withRetry(
+        () => fetchCalendarEventsWithCache(apiKey),
+        DEFAULT_RETRY_CONFIG
+      );
     }
   } catch (error) {
     console.error('Calendar fetch error:', error);
@@ -91,18 +114,40 @@ export async function Calendar({
 
   // Render error state if we have an error
   if (calendarError) {
-    return <CalendarErrorFallback error={calendarError} />;
+    return (
+      <div className={className}>
+        {developmentWarnings.map((warning, index) => (
+          <DevelopmentWarning
+            key={index}
+            message={warning}
+            type="warning"
+          />
+        ))}
+        <CalendarErrorState error={calendarError} />
+      </div>
+    );
   }
 
-  // Render the calendar with events
+  // Render the calendar with events wrapped in error boundary and theme provider
   return (
-    <CalendarClient
-      events={events}
-      className={className}
-      theme={theme}
-      locale={locale}
-      timeZone={timeZone}
-    />
+    <ThemeProvider config={{ theme, darkTheme, mode, classPrefix }}>
+      <div className={className}>
+        {developmentWarnings.map((warning, index) => (
+          <DevelopmentWarning
+            key={index}
+            message={warning}
+            type="warning"
+          />
+        ))}
+        <CalendarErrorBoundary>
+          <CalendarClient
+            events={events}
+            locale={locale}
+            timeZone={timeZone}
+          />
+        </CalendarErrorBoundary>
+      </div>
+    </ThemeProvider>
   );
 }
 
@@ -130,109 +175,3 @@ async function fetchCalendarEventsWithCache(
   }
 }
 
-/**
- * Error fallback component for calendar errors
- */
-function CalendarErrorFallback({ 
-  error
-}: { 
-  error: CalendarError; 
-}) {
-  const getErrorContent = () => {
-    switch (error.code) {
-      case 'MISSING_API_KEY':
-        return {
-          title: 'API Key Required',
-          message: 'Google Calendar API key is required to display calendar events.',
-          help: (
-            <div>
-              <p>To fix this issue:</p>
-              <ol>
-                <li>Get a Google Calendar API key from the Google Cloud Console</li>
-                <li>Set the <code>GOOGLE_CALENDAR_API_KEY</code> environment variable</li>
-                <li>Restart your application</li>
-              </ol>
-              <a 
-                href="https://developers.google.com/calendar/api/quickstart" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="cal7-error__link"
-              >
-                View Google Calendar API Documentation
-              </a>
-            </div>
-          ),
-        };
-        
-      case 'NETWORK_ERROR':
-        return {
-          title: 'Connection Error',
-          message: 'Unable to connect to Google Calendar. Please check your internet connection and try again.',
-          help: (
-            <div>
-              <p>This error can occur due to:</p>
-              <ul>
-                <li>Network connectivity issues</li>
-                <li>Google Calendar API service outage</li>
-                <li>Firewall or proxy blocking the request</li>
-              </ul>
-            </div>
-          ),
-        };
-        
-      case 'PERMISSION_ERROR':
-        return {
-          title: 'Permission Denied',
-          message: 'The API key does not have permission to access the calendar.',
-          help: (
-            <div>
-              <p>Please check:</p>
-              <ul>
-                <li>The API key is valid and active</li>
-                <li>The Google Calendar API is enabled in your Google Cloud project</li>
-                <li>The calendar is set to public</li>
-              </ul>
-            </div>
-          ),
-        };
-        
-      default:
-        return {
-          title: 'Calendar Error',
-          message: error.message || 'An unexpected error occurred while loading the calendar.',
-          help: (
-            <div>
-              <p>Please try refreshing the page. If the problem persists, contact support.</p>
-            </div>
-          ),
-        };
-    }
-  };
-
-  const { title, message, help } = getErrorContent();
-  const errorClass = `cal7-error--${error.code.toLowerCase().replace('_', '-')}`;
-
-  return (
-    <div className={`cal7-error ${errorClass}`}>
-      <div className="cal7-error__content">
-        <h3 className="cal7-error__title">{title}</h3>
-        <p className="cal7-error__message">{message}</p>
-        <div className="cal7-error__help">{help}</div>
-        
-        {/* Debug information in development */}
-        {process.env.NODE_ENV === 'development' && (
-          <details className="cal7-error__debug">
-            <summary>Debug Information</summary>
-            <pre className="cal7-error__debug-info">
-              {JSON.stringify({
-                errorCode: error.code,
-                originalError: error.originalError?.message,
-                stack: error.stack,
-              }, null, 2)}
-            </pre>
-          </details>
-        )}
-      </div>
-    </div>
-  );
-}

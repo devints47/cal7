@@ -4,6 +4,21 @@ export { CalendarClient } from './components/CalendarClient';
 export { EventModal } from './components/EventModal';
 export { default as AddToCalendarButton } from './components/AddToCalendarButton';
 
+// Error handling components
+export { 
+  ErrorBoundary,
+  CalendarErrorBoundary,
+  EventModalErrorBoundary 
+} from './components/CalendarErrorBoundary';
+export { 
+  ErrorState,
+  CalendarErrorState,
+  InlineErrorMessage,
+  EmptyEventsState,
+  ConnectionStatus,
+  DevelopmentWarning 
+} from './components/ErrorStates';
+
 // Core type exports
 export type { 
   CalendarProps,
@@ -30,7 +45,30 @@ export type {
   CalendarSubscription
 } from './types/events';
 
-export type { CalendarTheme } from './types/theme';
+export type { 
+  CalendarTheme, 
+  ThemeMode, 
+  ThemeConfig, 
+  DarkTheme 
+} from './types/theme';
+
+// Theme system exports
+export { 
+  ThemeProvider, 
+  useTheme, 
+  useThemeClasses, 
+  useThemeVariables 
+} from './components/ThemeProvider';
+
+export {
+  defaultTheme,
+  defaultDarkTheme,
+  mergeTheme,
+  generateCSSVariables,
+  validateTheme,
+  getSystemThemePreference,
+  resolveThemeMode
+} from './types/theme';
 
 export type {
   CalendarErrorCode,
@@ -78,3 +116,19 @@ export {
   isAppleDevice,
   getCalendarAppName
 } from './utils/device-detection';
+
+// Retry and error handling utilities
+export {
+  withRetry,
+  useRetryState,
+  useAutoRetry,
+  CircuitBreaker,
+  isRetryableError,
+  calculateRetryDelay,
+  DEFAULT_RETRY_CONFIG
+} from './utils/retry';
+
+export type {
+  RetryConfig,
+  RetryState
+} from './utils/retry';

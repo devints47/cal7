@@ -16,6 +16,8 @@ import { filterEventsForWeek } from '../utils/google-calendar-api';
 import { WeekNavigation } from './WeekNavigation';
 import { CalendarGrid } from './CalendarGrid';
 import { EventModal } from './EventModal';
+import { EventModalErrorBoundary } from './CalendarErrorBoundary';
+import { useThemeClasses } from './ThemeProvider';
 
 /**
  * CalendarClient Component
@@ -28,11 +30,12 @@ export function CalendarClient({
   events,
   initialWeek,
   className = '',
-  theme,
   locale = 'en-US',
   timeZone = 'UTC',
   onEventClick,
 }: CalendarClientProps) {
+  // Get theme classes
+  const themeClasses = useThemeClasses();
   // State management
   const [currentWeek, setCurrentWeek] = useState<Date>(
     initialWeek ? new Date(initialWeek) : new Date()
@@ -89,7 +92,7 @@ export function CalendarClient({
 
   return (
     <div 
-      className={`cal7-calendar ${className}`}
+      className={`${themeClasses.calendar} ${className}`}
       role="application"
       aria-label={`Calendar for week of ${weekRangeString}`}
     >
@@ -100,8 +103,7 @@ export function CalendarClient({
         onPreviousWeek={handlePreviousWeek}
         onNextWeek={handleNextWeek}
         weekRangeString={weekRangeString}
-        className="cal7-calendar__navigation"
-        theme={theme}
+        className={`${themeClasses.calendar}__navigation`}
         locale={locale}
       />
 
@@ -109,21 +111,22 @@ export function CalendarClient({
       <CalendarGrid
         weekData={weekWithEvents}
         onEventClick={handleEventClick}
-        className="cal7-calendar__grid"
-        theme={theme}
+        className={`${themeClasses.calendar}__grid`}
         locale={locale}
         timeZone={timeZone}
       />
 
-      {/* Event Modal */}
-      <EventModal
-        event={selectedEvent}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        timeZone={timeZone}
-        locale={locale}
-        showAddToCalendar={true}
-      />
+      {/* Event Modal with Error Boundary */}
+      <EventModalErrorBoundary onClose={handleModalClose}>
+        <EventModal
+          event={selectedEvent}
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          timeZone={timeZone}
+          locale={locale}
+          showAddToCalendar={true}
+        />
+      </EventModalErrorBoundary>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 /* Cal7 Calendar Component Styles */
 
-/* Import component-specific styles */
+/* Import theme system and component-specific styles */
+@import './theme.css';
 @import './add-to-calendar.css';
 
 /* Error States */

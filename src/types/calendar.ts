@@ -1,5 +1,5 @@
 import type { CalendarEvent } from './events';
-import type { CalendarTheme } from './theme';
+import type { CalendarTheme, ThemeMode } from './theme';
 
 // Main Calendar Server Component props
 export interface CalendarProps {
@@ -8,6 +8,9 @@ export interface CalendarProps {
   locale?: string;
   className?: string;
   theme?: CalendarTheme;
+  darkTheme?: CalendarTheme;
+  mode?: ThemeMode;
+  classPrefix?: string;
   fetcher?: () => Promise<CalendarEvent[]>;
   onError?: (error: Error) => void;
 }
@@ -17,7 +20,6 @@ export interface CalendarClientProps {
   events: CalendarEvent[];
   initialWeek?: Date;
   className?: string;
-  theme?: CalendarTheme;
   locale?: string;
   timeZone?: string;
   onEventClick?: (event: CalendarEvent) => void;

@@ -77,39 +77,39 @@
     }
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.32.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/dompurify": "^3.0.5",
     "@types/jest-axe": "^3.5.9",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.16.5",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "axe-core": "^4.8.4",
-    "eslint": "^9.17.0",
+    "eslint": "^9.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "globals": "^15.14.0",
+    "globals": "^16.3.0",
     "jest-axe": "^10.0.0",
-    "jsdom": "^24.0.0",
+    "jsdom": "^26.1.0",
     "postcss": "^8.4.35",
     "sass": "^1.71.1",
     "size-limit": "^11.0.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
-    "vite": "^6.0.5",
+    "vite": "^7.0.6",
     "vite-plugin-dts": "^4.3.0",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.4"
   },
   "dependencies": {
-    "dompurify": "^3.0.9",
-    "focus-trap": "^7.5.4",
-    "zod": "^3.22.4"
+    "dompurify": "^3.2.6",
+    "focus-trap": "^7.6.5",
+    "zod": "^4.0.10"
   },
   "size-limit": [
     {
