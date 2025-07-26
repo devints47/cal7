@@ -177,7 +177,7 @@ export function DefaultThemeExample() {
       <div style={{ padding: '2rem' }}>
         <h2>Default Theme Example</h2>
         <ThemeControls />
-        <Calendar calendarId="your-calendar-id@gmail.com" />
+        <Calendar />
       </div>
     </ThemeProvider>
   );
@@ -196,7 +196,7 @@ export function CustomThemeExample() {
       <div style={{ padding: '2rem' }}>
         <h2>Custom Purple Theme Example</h2>
         <ThemeControls />
-        <Calendar calendarId="your-calendar-id@gmail.com" />
+        <Calendar />
       </div>
     </ThemeProvider>
   );
@@ -215,7 +215,7 @@ export function CustomPrefixExample() {
         <h2>Custom Class Prefix Example</h2>
         <p>This example uses "my-calendar" as the CSS class prefix instead of "cal7".</p>
         <ThemeControls />
-        <Calendar calendarId="your-calendar-id@gmail.com" />
+        <Calendar />
       </div>
     </ThemeProvider>
   );
@@ -247,7 +247,7 @@ export function PartialThemeExample() {
         <h2>Partial Theme Customization</h2>
         <p>Only customizing colors and border radius, keeping other defaults.</p>
         <ThemeControls />
-        <Calendar calendarId="your-calendar-id@gmail.com" />
+        <Calendar />
       </div>
     </ThemeProvider>
   );
@@ -260,14 +260,14 @@ export function MultipleThemesExample() {
       <ThemeProvider config={{ theme: customTheme, mode: 'light' }}>
         <div>
           <h3>Purple Theme</h3>
-          <Calendar calendarId="calendar1@gmail.com" />
+          <Calendar />
         </div>
       </ThemeProvider>
       
       <ThemeProvider config={{ mode: 'dark' }}>
         <div>
           <h3>Default Dark Theme</h3>
-          <Calendar calendarId="calendar2@gmail.com" />
+          <Calendar />
         </div>
       </ThemeProvider>
     </div>

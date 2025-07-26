@@ -105,8 +105,23 @@ export interface CalendarTheme {
   // Event customization
   event?: {
     height?: string; // Customizable event height
+    maxHeight?: string; // Maximum event height
     width?: string; // Customizable event width
     titleMinHeight?: string; // Minimum height for event titles
+  };
+  
+  // Calendar layout
+  calendar?: {
+    height?: string; // Customizable calendar day column height
+  };
+  
+  // Border customization
+  borders?: {
+    weekNavigation?: string; // Border between date range and days header
+    dayColumn?: string; // Borders around each day column
+    eventSection?: string; // Borders between event sections
+    headerBottom?: string; // Border below header area
+    calendarTop?: string; // Border at top of calendar
   };
   
   // Z-index values
@@ -246,8 +261,21 @@ export const defaultTheme: CalendarTheme = {
   
   event: {
     height: 'auto',
+    maxHeight: '540px', // Triple the original height
     width: '100%',
     titleMinHeight: '2.5rem', // Minimum 2 lines height
+  },
+  
+  calendar: {
+    height: '240px', // Double the original 120px
+  },
+  
+  borders: {
+    weekNavigation: '1px solid var(--cal7-color-border, #e5e7eb)',
+    dayColumn: '1px solid var(--cal7-color-border, #e5e7eb)',
+    eventSection: '1px solid var(--cal7-color-border, #e5e7eb)',
+    headerBottom: '1px solid var(--cal7-color-border, #e5e7eb)',
+    calendarTop: 'none',
   },
 };
 
@@ -357,8 +385,21 @@ export const defaultDarkTheme: CalendarTheme = {
   
   event: {
     height: 'auto',
+    maxHeight: '540px', // Triple the original height
     width: '100%',
     titleMinHeight: '2.5rem', // Minimum 2 lines height
+  },
+  
+  calendar: {
+    height: '240px', // Double the original 120px
+  },
+  
+  borders: {
+    weekNavigation: '1px solid var(--cal7-color-border, #374151)',
+    dayColumn: '1px solid var(--cal7-color-border, #374151)',
+    eventSection: '1px solid var(--cal7-color-border, #374151)',
+    headerBottom: '1px solid var(--cal7-color-border, #374151)',
+    calendarTop: 'none',
   },
 };
 
@@ -383,6 +424,8 @@ export function mergeTheme(baseTheme: CalendarTheme, customTheme?: Partial<Calen
     zIndex: { ...baseTheme.zIndex, ...customTheme.zIndex },
     transitions: { ...baseTheme.transitions, ...customTheme.transitions },
     event: { ...baseTheme.event, ...customTheme.event },
+    calendar: { ...baseTheme.calendar, ...customTheme.calendar },
+    borders: { ...baseTheme.borders, ...customTheme.borders },
   };
 }
 
@@ -479,6 +522,24 @@ export function generateCSSVariables(theme: CalendarTheme, prefix: string = 'cal
     Object.entries(theme.event).forEach(([key, value]) => {
       if (value) {
         variables[`--${prefix}-event-${kebabCase(key)}`] = value;
+      }
+    });
+  }
+  
+  // Calendar customization
+  if (theme.calendar) {
+    Object.entries(theme.calendar).forEach(([key, value]) => {
+      if (value) {
+        variables[`--${prefix}-calendar-${kebabCase(key)}`] = value;
+      }
+    });
+  }
+  
+  // Border customization
+  if (theme.borders) {
+    Object.entries(theme.borders).forEach(([key, value]) => {
+      if (value) {
+        variables[`--${prefix}-border-${kebabCase(key)}`] = value;
       }
     });
   }

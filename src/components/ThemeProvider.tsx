@@ -180,9 +180,16 @@ export function useTheme(): ThemeContextValue {
   return context;
 }
 
-// Hook to get CSS class names with prefix
+// Hook to use theme context with optional fallback
+export function useThemeOptional(): ThemeContextValue | null {
+  const context = useContext(ThemeContext);
+  return context || null;
+}
+
+// Hook to get CSS class names with prefix - works with or without ThemeProvider
 export function useThemeClasses() {
-  const { classPrefix } = useTheme();
+  const context = useThemeOptional();
+  const classPrefix = context?.classPrefix || 'cal7';
   
   return {
     calendar: `${classPrefix}-calendar`,

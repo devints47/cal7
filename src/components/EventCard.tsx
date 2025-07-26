@@ -3,7 +3,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 import type { CalendarEvent } from '../types/events';
 import type { CalendarTheme } from '../types/theme';
-import { calculateDuration } from '../utils/date-utils';
+// Removed unused import: calculateDuration
 
 interface EventCardProps {
   event: CalendarEvent;
@@ -131,7 +131,7 @@ export function EventCard({
   // Format event time display with locale and timezone support
   const getTimeDisplay = () => {
     if (event.isAllDay) {
-      return 'All day';
+      return { type: 'allday', text: 'All day' };
     }
     
     const options: Intl.DateTimeFormatOptions = {
@@ -144,8 +144,13 @@ export function EventCard({
     const startTime = event.startTime.toLocaleTimeString(locale, options);
     const endTime = event.endTime.toLocaleTimeString(locale, options);
     
-    // Always show start and end time (e.g., "8:00AM to 10:00PM")
-    return `${startTime} to ${endTime}`;
+    // Return structured time for 3-line display
+    return {
+      type: 'timed',
+      startTime,
+      endTime,
+      text: `${startTime} to ${endTime}` // For accessibility
+    };
   };
 
   // Check if event is in the past
@@ -255,27 +260,69 @@ export function EventCard({
 
         {/* Event Time */}
         <div className="cal7-event-card__time">
-          {/* Clock icon */}
-          <svg 
-            className="cal7-event-card__time-icon" 
-            width="12" 
-            height="12" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12,6 12,12 16,14"></polyline>
-          </svg>
-          <time 
-            dateTime={event.startTime.toISOString()}
-            className="cal7-event-card__time-text"
-            title={getAccessibleTimeDescription()} // Full time info on hover
-          >
-            {getTimeDisplay()}
-          </time>
+          {(() => {
+            const timeDisplay = getTimeDisplay();
+            if (timeDisplay.type === 'allday') {
+              return (
+                <>
+                  <svg 
+                    className="cal7-event-card__time-icon" 
+                    width="12" 
+                    height="12" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                  </svg>
+                  <time 
+                    dateTime={event.startTime.toISOString()}
+                    className="cal7-event-card__time-text"
+                    title={getAccessibleTimeDescription()}
+                  >
+                    {timeDisplay.text}
+                  </time>
+                </>
+              );
+            } else {
+              return (
+                <div className="cal7-event-card__time-multiline">
+                  <div className="cal7-event-card__time-start">
+                    {timeDisplay.startTime}
+                  </div>
+                  <div className="cal7-event-card__time-to">
+                    <svg 
+                      className="cal7-event-card__time-icon" 
+                      width="12" 
+                      height="12" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    <span>to</span>
+                  </div>
+                  <div className="cal7-event-card__time-end">
+                    {timeDisplay.endTime}
+                  </div>
+                  <time 
+                    dateTime={event.startTime.toISOString()}
+                    className="cal7-sr-only"
+                    title={getAccessibleTimeDescription()}
+                  >
+                    {timeDisplay.text}
+                  </time>
+                </div>
+              );
+            }
+          })()}
         </div>
 
         {/* Event Location (if present and not compact) */}

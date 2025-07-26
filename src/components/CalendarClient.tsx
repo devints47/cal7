@@ -34,7 +34,7 @@ export function CalendarClient({
   timeZone = 'UTC',
   onEventClick,
 }: CalendarClientProps) {
-  // Get theme classes
+  // Get theme classes with fallback to default
   const themeClasses = useThemeClasses();
   // State management
   const [currentWeek, setCurrentWeek] = useState<Date>(

@@ -1,6 +1,7 @@
 // Main package exports
 export { Calendar } from './components/Calendar';
 export { CalendarClient } from './components/CalendarClient';
+
 export { EventModal } from './components/EventModal';
 export { default as AddToCalendarButton } from './components/AddToCalendarButton';
 
@@ -72,7 +73,6 @@ export {
 
 export type {
   CalendarErrorCode,
-  ErrorState,
   LoadingStateType,
   LoadingState,
   ApiResponse,

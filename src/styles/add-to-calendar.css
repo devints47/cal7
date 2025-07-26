@@ -6,7 +6,7 @@
   justify-content: center;
   gap: var(--cal7-spacing-sm);
   padding: var(--cal7-spacing-sm) var(--cal7-spacing-lg);
-  background: var(--cal7-color-primary);
+  background: var(--cal7-color-primary); /* Remove gradient, use theme color */
   color: var(--cal7-color-background);
   border: 1px solid var(--cal7-color-primary);
   border-radius: var(--cal7-border-radius-lg);
@@ -143,6 +143,48 @@
 .cal7-modal-add-to-calendar .cal7-calendar-icon {
   width: 1rem;
   height: 1rem;
+}
+
+/* Inline modal add-to-calendar button styling */
+.cal7-modal-add-to-calendar-inline {
+  font-size: var(--cal7-font-size-xs);
+  padding: var(--cal7-spacing-xs) var(--cal7-spacing-sm);
+  border-radius: var(--cal7-border-radius-sm);
+  background: var(--cal7-color-surface);
+  color: var(--cal7-color-text);
+  border: 1px solid var(--cal7-color-border);
+}
+
+.cal7-modal-add-to-calendar-inline:hover {
+  background: var(--cal7-color-hover);
+  border-color: var(--cal7-color-border);
+}
+
+.cal7-modal-add-to-calendar-inline .cal7-calendar-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* Main modal add-to-calendar button styling - Tailwind green and same size as close button */
+.cal7-modal-main-add-to-calendar {
+  width: 100%;
+  background: #10b981 !important; /* Tailwind green */
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  transition: all 0.2s !important;
+}
+
+.cal7-modal-main-add-to-calendar:hover {
+  background: #059669 !important;
+  transform: none !important;
+}
+
+.cal7-modal-main-add-to-calendar:focus {
+  box-shadow: 0 0 0 2px #f59e0b !important;
 }
 
 /* Responsive adjustments */

@@ -71,7 +71,7 @@ async function sanitizeHtml(content: string | undefined): Promise<string> {
   }
   
   // Allow only safe inline tags
-  return purifyInstance.sanitize(content, {
+  return (purifyInstance as any).sanitize(content, {
     ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'br'],
     ALLOWED_ATTR: ['href', 'target'],
     ALLOW_DATA_ATTR: false,

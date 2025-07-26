@@ -19,6 +19,7 @@
   margin: 0 auto;
   padding: 1rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: transparent; /* Make outer container fully transparent */
 }
 
 /* Week Navigation */
@@ -29,7 +30,7 @@
   padding: 1rem;
   background: var(--cal7-color-surface, #f9fafb);
   border: 1px solid var(--cal7-color-border, #e5e7eb);
-  border-bottom: none;
+  border-bottom: var(--cal7-border-week-navigation, 1px solid var(--cal7-color-border, #e5e7eb));
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
@@ -120,11 +121,12 @@
 /* Calendar Grid */
 .cal7-calendar-grid {
   border: 1px solid var(--cal7-color-border, #e5e7eb);
-  border-top: none;
+  border-top: var(--cal7-border-calendar-top, none);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   overflow: hidden;
   background: var(--cal7-color-background, white);
+  box-shadow: var(--cal7-shadow-calendar, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06));
 }
 
 .cal7-calendar-grid:focus {
@@ -137,17 +139,25 @@
   display: none;
   grid-template-columns: repeat(7, 1fr);
   background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: var(--cal7-border-header-bottom, 1px solid var(--cal7-color-border, #e5e7eb));
 }
 
 .cal7-calendar-grid__header {
   padding: 1rem;
   text-align: center;
-  border-right: 1px solid #e5e7eb;
+  border-right: var(--cal7-border-day-column, 1px solid var(--cal7-color-border, #e5e7eb));
 }
 
 .cal7-calendar-grid__header:last-child {
   border-right: none;
+}
+
+.cal7-calendar-grid__header:nth-child(even) {
+  background: var(--cal7-color-header-even, #f3f4f6);
+}
+
+.cal7-calendar-grid__header:nth-child(odd) {
+  background: var(--cal7-color-header-odd, #f9fafb);
 }
 
 .cal7-calendar-grid__header--today {
@@ -181,8 +191,9 @@
 
 /* Day Column */
 .cal7-day-column {
-  border-bottom: 1px solid var(--cal7-color-border, #e5e7eb);
-  min-height: 120px;
+  border-bottom: var(--cal7-border-event-section, 1px solid var(--cal7-color-border, #e5e7eb));
+  min-height: var(--cal7-calendar-height, 240px); /* Double the original 120px */
+  max-height: var(--cal7-event-max-height, 540px); /* Triple the original height */
   position: relative;
   transition: all 0.2s ease;
 }
@@ -326,15 +337,34 @@
 }
 
 .cal7-event-card__title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #111827;
+  font-size: var(--cal7-font-size-lg, 1.125rem); /* Increased font size */
+  font-weight: 700; /* Made bold */
+  color: var(--cal7-color-event-text, #111827);
   margin: 0 0 0.25rem 0;
   line-height: 1.4;
+  min-height: var(--cal7-event-title-min-height, 2.5rem); /* Minimum 2 lines height */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cal7-event-card--compact .cal7-event-card__title {
-  font-size: 0.8125rem;
+  font-size: var(--cal7-font-size-base, 1rem); /* Increased compact title size */
+}
+
+/* Past event styling */
+.cal7-event-card--past {
+  opacity: 0.6;
+}
+
+.cal7-event-card--past .cal7-event-card__title {
+  color: var(--cal7-color-event-past-text, #9ca3af);
+}
+
+.cal7-event-card--past .cal7-event-card__time-text,
+.cal7-event-card--past .cal7-event-card__time-multiline {
+  color: var(--cal7-color-event-past-text, #9ca3af);
 }
 
 .cal7-event-card__time {
@@ -345,9 +375,38 @@
 }
 
 .cal7-event-card__time-text {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: var(--cal7-font-size-xs, 0.75rem); /* Decreased time font size */
+  color: var(--cal7-color-text-secondary, #6b7280);
   font-weight: 500;
+}
+
+/* Multi-line time display */
+.cal7-event-card__time-multiline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  font-size: var(--cal7-font-size-xs, 0.75rem);
+  color: var(--cal7-color-text-secondary, #6b7280);
+}
+
+.cal7-event-card__time-start,
+.cal7-event-card__time-end {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.cal7-event-card__time-to {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 400;
+  font-size: 0.6875rem; /* Slightly smaller for "to" line */
+}
+
+.cal7-event-card__time-to .cal7-event-card__time-icon {
+  width: 10px;
+  height: 10px;
 }
 
 .cal7-event-card__location {
@@ -486,8 +545,9 @@
 
   .cal7-day-column {
     border-bottom: none;
-    border-right: 1px solid #e5e7eb;
-    min-height: 150px;
+    border-right: var(--cal7-border-day-column, 1px solid var(--cal7-color-border, #e5e7eb));
+    min-height: var(--cal7-calendar-height, 240px); /* Double the original 120px */
+    max-height: var(--cal7-event-max-height, 675px); /* Triple the original height */
   }
 
   .cal7-day-column:last-child {
@@ -521,7 +581,8 @@
   }
 
   .cal7-day-column {
-    min-height: 180px;
+    min-height: var(--cal7-calendar-height, 240px); /* Double the original 120px */
+    max-height: var(--cal7-event-max-height, 810px); /* Triple the original height */
   }
 
   .cal7-event-card {

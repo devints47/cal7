@@ -129,8 +129,13 @@ export async function Calendar({
   }
 
   // Render the calendar with events wrapped in error boundary and theme provider
+  // Only pass theme config if any theme parameters are provided, otherwise use defaults
+  const themeConfig = theme || darkTheme || mode !== 'light' || classPrefix !== 'cal7' 
+    ? { theme, darkTheme, mode, classPrefix }
+    : undefined;
+
   return (
-    <ThemeProvider config={{ theme, darkTheme, mode, classPrefix }}>
+    <ThemeProvider config={themeConfig}>
       <div className={className}>
         {developmentWarnings.map((warning, index) => (
           <DevelopmentWarning

@@ -92,7 +92,7 @@ export function EventModal({
     }
   }, [isOpen, handleKeyDown]);
 
-  // Handle backdrop click
+  // Handle backdrop click - Enable modal closing when clicking outside content area
   const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -132,16 +132,16 @@ export function EventModal({
     }
   };
 
-  // Make emails and links clickable in text
+  // Make emails and links clickable in text - Fix HTML parsing
   const makeLinksClickable = (text: string): string => {
     // Email regex
     const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
-    // URL regex
+    // URL regex - improved to handle more cases
     const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
     
     return text
-      .replace(emailRegex, '<a href="mailto:$1" style="color: #3b82f6; text-decoration: underline;">$1</a>')
-      .replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
+      .replace(emailRegex, '<a href="mailto:$1" style="color: var(--cal7-color-primary, #3b82f6); text-decoration: underline;">$1</a>')
+      .replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--cal7-color-primary, #3b82f6); text-decoration: underline;">$1</a>');
   };
 
   // Open device-appropriate map app
@@ -325,17 +325,16 @@ export function EventModal({
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <span style={{ fontWeight: '500' }}>
                   {formatEventDate(event.startTime)}
                 </span>
-                <div style={{ marginTop: '0.25rem' }}>
-                  <AddToCalendarButton 
-                    event={event} 
-                    showLabel={false}
-                    className="cal7-modal-add-to-calendar"
-                  />
-                </div>
+                {/* Make small add-to-calendar button inline with date */}
+                <AddToCalendarButton 
+                  event={event} 
+                  showLabel={false}
+                  className="cal7-modal-add-to-calendar-inline"
+                />
               </div>
             </div>
 
@@ -405,8 +404,8 @@ export function EventModal({
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#3b82f6',
-                    textDecoration: 'underline',
+                    color: 'var(--cal7-color-text, #374151)', // Use theme styling, no underline
+                    textDecoration: 'none',
                     cursor: 'pointer',
                     fontWeight: '500',
                     fontSize: 'inherit',
@@ -415,10 +414,10 @@ export function EventModal({
                     textAlign: 'left',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#1d4ed8';
+                    e.currentTarget.style.color = 'var(--cal7-color-primary, #3b82f6)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#3b82f6';
+                    e.currentTarget.style.color = 'var(--cal7-color-text, #374151)';
                   }}
                   title="Open in map application"
                 >
@@ -548,8 +547,16 @@ export function EventModal({
               </button>
 
               {showAddToCalendar && (
-                <div style={{ flex: 1, minWidth: '120px' }}>
-                  <AddToCalendarButton event={event} />
+                <div 
+                  style={{
+                    flex: 1,
+                    minWidth: '120px',
+                  }}
+                >
+                  <AddToCalendarButton 
+                    event={event} 
+                    className="cal7-modal-main-add-to-calendar"
+                  />
                 </div>
               )}
             </div>

@@ -91,6 +91,9 @@
   --cal7-event-height: auto;
   --cal7-event-width: 100%;
   --cal7-event-title-min-height: 2.5rem;
+  
+  /* Calendar customization */
+  --cal7-calendar-height: 240px;
 }
 
 /* Dark theme variables */
@@ -160,10 +163,8 @@
   margin: 0 auto;
   padding: var(--cal7-spacing-md);
   font-family: var(--cal7-font-family);
-  background-color: var(--cal7-color-background);
+  background-color: transparent; /* Make outer container transparent */
   color: var(--cal7-color-text);
-  box-shadow: var(--cal7-shadow-calendar);
-  border-radius: var(--cal7-border-radius-lg);
 }
 
 /* Week Navigation */

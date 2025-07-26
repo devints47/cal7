@@ -17,7 +17,7 @@ import "cal7/styles";
 // Set environment variable: GOOGLE_CALENDAR_API_KEY=your_api_key
 
 export default function MyApp() {
-  return <Calendar calendarId="your-calendar-id@gmail.com" />;
+  return <Calendar />;
 }
 ```
 
@@ -41,13 +41,7 @@ export default function MyApp() {
 import { Calendar } from "cal7";
 
 export default function EventsPage() {
-  return (
-    <Calendar
-      calendarId="your-calendar-id@gmail.com"
-      locale="en-US"
-      timeZone="America/New_York"
-    />
-  );
+  return <Calendar locale="en-US" timeZone="America/New_York" />;
 }
 ```
 
@@ -72,7 +66,7 @@ const customTheme = {
 export default function App() {
   return (
     <ThemeProvider config={{ theme: customTheme }}>
-      <Calendar calendarId="your-calendar-id@gmail.com" />
+      <Calendar />
     </ThemeProvider>
   );
 }
@@ -174,7 +168,7 @@ const customTheme: CalendarTheme = {
 export default function App() {
   return (
     <ThemeProvider config={{ theme: customTheme }}>
-      <Calendar calendarId="your-calendar-id@gmail.com" />
+      <Calendar />
     </ThemeProvider>
   );
 }
@@ -194,7 +188,7 @@ export default function App() {
         darkTheme: customDarkTheme,
       }}
     >
-      <Calendar calendarId="your-calendar-id@gmail.com" />
+      <Calendar />
     </ThemeProvider>
   );
 }
