@@ -60,3 +60,7 @@ noveltea/
 test-server/
 TEST_SERVER_*.md
 start-test-server.sh
+
+# Development documentation (not for publishing)
+ORIGINAL_IMPLEMENTATION_ANALYSIS.md
+test-visual.html

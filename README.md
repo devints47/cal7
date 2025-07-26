@@ -33,6 +33,23 @@ export default function MyApp() {
 - ⚡ **Performance**: Built-in caching and optimized rendering
 - 🎯 **TypeScript**: Full type safety and IntelliSense support
 
+## Framework Compatibility
+
+This package is designed specifically for **React-based frameworks** with the following support levels:
+
+### ✅ Fully Supported
+- **Next.js 13+ (App Router)** - Primary target with full server-side rendering support
+- **Next.js 12+ (Pages Router)** - Full compatibility with getServerSideProps/getStaticProps
+
+### ⚠️ Partial Support  
+- **Create React App / Vite** - Client-side only, requires custom `fetcher` prop for API calls
+- **Remix** - May work with adaptation, but not officially tested
+
+### ❌ Not Compatible
+- **Vue/Nuxt, Svelte/SvelteKit, Angular** - Different framework ecosystems, would need separate packages
+
+**Recommended:** Use with Next.js for the best experience with server-side rendering and secure API key handling.
+
 ## Basic Usage
 
 ### Server Component (Recommended)

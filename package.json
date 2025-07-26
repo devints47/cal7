@@ -17,7 +17,7 @@
       "import": "./dist/route.js",
       "require": "./dist/route.cjs"
     },
-    "./styles": "./dist/style.css",
+    "./styles": "./dist/cal7.css",
     "./package.json": "./package.json"
   },
   "files": [
