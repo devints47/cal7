@@ -21,9 +21,6 @@ export default function MyApp() {
 }
 ```
 
-<img width="1205" height="601" alt="Screenshot 2025-07-26 at 11 32 54 AM" src="https://github.com/user-attachments/assets/4b2927e5-0a2b-48ec-ad9d-4fc55747107e" />
-
-
 ## Features
 
 - 🚀 **Zero Configuration**: Just set your API key and go
@@ -35,6 +32,10 @@ export default function MyApp() {
 - 🔒 **Secure**: Server-side API key handling, no client-side exposure
 - ⚡ **Performance**: Built-in caching and optimized rendering
 - 🎯 **TypeScript**: Full type safety and IntelliSense support
+
+--------
+<img width="1205" height="601" alt="Screenshot 2025-07-26 at 11 32 54 AM" src="https://github.com/user-attachments/assets/4b2927e5-0a2b-48ec-ad9d-4fc55747107e" />
+
 
 ## Framework Compatibility
 
