@@ -13,6 +13,7 @@ interface WeekNavigationProps {
   className?: string;
   theme?: CalendarTheme;
   locale?: string;
+  calendarName?: string;
 }
 
 /**
@@ -30,6 +31,7 @@ export function WeekNavigation({
   className = '',
   theme: _theme,
   locale: _locale = 'en-US',
+  calendarName = 'Calendar',
 }: WeekNavigationProps) {
   
   // Check if we're viewing the current week
@@ -75,6 +77,13 @@ export function WeekNavigation({
             </span>
           )}
         </h2>
+      </div>
+
+      {/* Calendar Name in Center */}
+      <div className="cal7-week-navigation__calendar-name">
+        <h1 className="cal7-week-navigation__calendar-title">
+          {calendarName}
+        </h1>
       </div>
 
       {/* Navigation Controls - Previous, Today, Next */}

@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react';
 import type { DayData, CalendarEvent } from '../types/events';
 import type { CalendarTheme } from '../types/theme';
 import { EventCard } from './EventCard';
-import { formatDateShort } from '../utils/date-utils';
+import { formatDateShort, formatDayWithMonth } from '../utils/date-utils';
 
 interface DayColumnProps {
   day: DayData;
@@ -97,11 +97,8 @@ export function DayColumn({
       <div className="cal7-day-column__mobile-header">
         <div className="cal7-day-column__mobile-header-content">
           <h3 className="cal7-day-column__mobile-day-name">
-            {day.dayName}
+            {formatDayWithMonth(day.date, _locale)}
           </h3>
-          <p className="cal7-day-column__mobile-day-date">
-            {formatDateShort(day.date, _locale)}
-          </p>
           {day.isToday && (
             <span className="cal7-day-column__today-indicator">
               Today

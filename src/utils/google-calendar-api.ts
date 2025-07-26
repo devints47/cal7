@@ -5,6 +5,19 @@ import type {
 } from '../types/events';
 import { CalendarError } from '../types/utils';
 
+// Calendar metadata interface
+export interface CalendarMetadata {
+  name: string;
+  description?: string;
+  timeZone?: string;
+}
+
+// Combined response interface
+export interface CalendarData {
+  events: CalendarEvent[];
+  metadata: CalendarMetadata;
+}
+
 // Google Calendar configuration - using the same public calendar as NovelTea
 const CALENDAR_ID = 'b382cfad3622bc528f1e748cc100b3abc92abfe801f983ca2a527357f7be7445@group.calendar.google.com';
 
@@ -52,6 +65,7 @@ const GoogleCalendarEventSchema = z.object({
 
 const GoogleCalendarResponseSchema = z.object({
   items: z.array(GoogleCalendarEventSchema),
+  summary: z.string().optional(), // Calendar name/title
   nextPageToken: z.string().optional(),
   error: z.object({
     message: z.string(),
@@ -161,11 +175,11 @@ function buildCalendarApiUrl(apiKey: string): string {
 }
 
 /**
- * Fetches calendar events from Google Calendar API
+ * Fetches calendar events and metadata from Google Calendar API
  */
-export async function fetchCalendarEvents(
+export async function fetchCalendarData(
   apiKey?: string
-): Promise<CalendarEvent[]> {
+): Promise<CalendarData> {
   // Validate API key
   const key = apiKey || process.env.GOOGLE_CALENDAR_API_KEY;
   if (!key) {
@@ -175,7 +189,30 @@ export async function fetchCalendarEvents(
     );
   }
   
-  const url = buildCalendarApiUrl(key);
+  try {
+    // Fetch events - the response includes calendar name in summary field
+    const result = await fetchCalendarEventsInternal(key);
+    
+    return result;
+  } catch (error) {
+    if (error instanceof CalendarError) {
+      throw error;
+    }
+    
+    throw new CalendarError(
+      `Failed to fetch calendar data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      'NETWORK_ERROR',
+      error instanceof Error ? error : undefined
+    );
+  }
+}
+
+/**
+ * Fetches calendar events from Google Calendar API (internal function)
+ * Now also extracts calendar metadata from the response
+ */
+async function fetchCalendarEventsInternal(apiKey: string): Promise<CalendarData> {
+  const url = buildCalendarApiUrl(apiKey);
   
   try {
     const response = await fetch(url, {
@@ -235,6 +272,20 @@ export async function fetchCalendarEvents(
       );
     }
     
+    // Extract calendar name from summary field
+    let calendarName = 'Calendar'; // Default fallback
+    if (data.summary) {
+      // Use the full calendar name as provided by the API
+      calendarName = data.summary;
+    }
+    
+    // Create metadata from extracted information
+    const metadata: CalendarMetadata = {
+      name: calendarName,
+      description: data.summary || 'NovelTea Event Calendar',
+      timeZone: 'UTC'
+    };
+    
     // Transform events to our internal format
     const events: CalendarEvent[] = [];
     
@@ -249,7 +300,7 @@ export async function fetchCalendarEvents(
       }
     }
     
-    return events;
+    return { events, metadata };
     
   } catch (error) {
     if (error instanceof CalendarError) {

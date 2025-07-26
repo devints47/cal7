@@ -155,51 +155,51 @@ export interface ThemeConfig {
   classPrefix?: string;
 }
 
-// Default light theme values
+// Default light theme values - Classic white/blue/grey color scheme
 export const defaultTheme: CalendarTheme = {
   colors: {
-    primary: '#3b82f6',
-    secondary: '#6b7280',
-    background: '#ffffff',
-    surface: '#f9fafb',
+    primary: '#2563eb', // Classic blue
+    secondary: '#64748b', // Slate grey
+    background: '#ffffff', // Pure white
+    surface: '#f8fafc', // Light grey-blue
     
-    text: '#111827',
-    textSecondary: '#374151',
-    textMuted: '#6b7280',
+    text: '#1e293b', // Dark slate
+    textSecondary: '#475569', // Medium slate
+    textMuted: '#64748b', // Light slate
     
-    border: '#e5e7eb',
-    borderLight: '#f3f4f6',
+    border: '#cbd5e1', // Light slate border
+    borderLight: '#e2e8f0', // Very light slate
     
-    today: '#92400e',
-    todayBackground: '#fef3c7',
-    focus: '#3b82f6',
-    hover: '#f3f4f6',
+    today: '#1d4ed8', // Bright blue for today
+    todayBackground: '#dbeafe', // Light blue background
+    focus: '#2563eb', // Classic blue focus
+    hover: '#f1f5f9', // Very light blue-grey hover
     
-    eventBackground: '#ffffff',
-    eventBorder: '#e5e7eb',
-    eventText: '#111827',
-    eventPastText: '#9ca3af',
+    eventBackground: '#ffffff', // White event cards
+    eventBorder: '#cbd5e1', // Light border for events
+    eventText: '#1e293b', // Dark text on events
+    eventPastText: '#94a3b8', // Muted grey for past events
     
-    // Day alternating colors
-    dayEven: '#fafafa',
+    // Day alternating colors - subtle blue-grey tones
+    dayEven: '#f8fafc',
     dayOdd: '#ffffff',
-    dayHover: '#f8fafc',
+    dayHover: '#f1f5f9',
     
-    // Header alternating colors
-    headerEven: '#f3f4f6',
-    headerOdd: '#f9fafb',
+    // Header alternating colors - blue-grey tones
+    headerEven: '#e2e8f0',
+    headerOdd: '#f1f5f9',
     
-    tentative: '#92400e',
-    cancelled: '#dc2626',
-    confirmed: '#059669',
+    tentative: '#f59e0b', // Amber for tentative
+    cancelled: '#dc2626', // Red for cancelled
+    confirmed: '#059669', // Green for confirmed
     error: '#dc2626',
     success: '#059669',
     warning: '#f59e0b',
-    info: '#3b82f6',
+    info: '#2563eb',
   },
   
   typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: '"Playfair Display", serif', // Changed to Playfair Display serif
     fontSize: {
       xs: '0.75rem',
       sm: '0.875rem',

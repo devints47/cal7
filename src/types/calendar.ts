@@ -23,6 +23,7 @@ export interface CalendarClientProps {
   locale?: string;
   timeZone?: string;
   onEventClick?: (event: CalendarEvent) => void;
+  calendarName?: string;
 }
 
 // Event Modal Component props

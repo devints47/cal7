@@ -214,3 +214,27 @@ export function isCurrentWeek(weekStart: Date): boolean {
   const currentWeekStart = getWeekStart(today);
   return weekStart.getTime() === currentWeekStart.getTime();
 }
+
+/**
+ * Formats day with abbreviated month and ordinal day (e.g., "Monday Aug 1st")
+ */
+export function formatDayWithMonth(date: Date, locale: string = 'en-US'): string {
+  const dayName = date.toLocaleDateString(locale, { weekday: 'long' });
+  const month = date.toLocaleDateString(locale, { month: 'short' });
+  const day = date.getDate();
+  
+  // Add ordinal suffix
+  const getOrdinalSuffix = (day: number): string => {
+    if (day >= 11 && day <= 13) {
+      return 'th';
+    }
+    switch (day % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
+  };
+  
+  return `${dayName} ${month} ${day}${getOrdinalSuffix(day)}`;
+}

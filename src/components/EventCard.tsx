@@ -264,36 +264,8 @@ export function EventCard({
             const timeDisplay = getTimeDisplay();
             if (timeDisplay.type === 'allday') {
               return (
-                <>
-                  <svg 
-                    className="cal7-event-card__time-icon" 
-                    width="12" 
-                    height="12" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12,6 12,12 16,14"></polyline>
-                  </svg>
-                  <time 
-                    dateTime={event.startTime.toISOString()}
-                    className="cal7-event-card__time-text"
-                    title={getAccessibleTimeDescription()}
-                  >
-                    {timeDisplay.text}
-                  </time>
-                </>
-              );
-            } else {
-              return (
-                <div className="cal7-event-card__time-multiline">
+                <div className="cal7-event-card__time-multiline cal7-event-card__time-multiline--allday">
                   <div className="cal7-event-card__time-start">
-                    {timeDisplay.startTime}
-                  </div>
-                  <div className="cal7-event-card__time-to">
                     <svg 
                       className="cal7-event-card__time-icon" 
                       width="12" 
@@ -307,10 +279,47 @@ export function EventCard({
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12,6 12,12 16,14"></polyline>
                     </svg>
+                    <span>All Day</span>
+                  </div>
+                  <div className="cal7-event-card__time-to">
+                    <span>Event</span>
+                  </div>
+                  <div className="cal7-event-card__time-end">
+                    <span>&nbsp;</span>
+                  </div>
+                  <time 
+                    dateTime={event.startTime.toISOString()}
+                    className="cal7-sr-only"
+                    title={getAccessibleTimeDescription()}
+                  >
+                    {timeDisplay.text}
+                  </time>
+                </div>
+              );
+            } else {
+              return (
+                <div className="cal7-event-card__time-multiline">
+                  <div className="cal7-event-card__time-start">
+                    <svg 
+                      className="cal7-event-card__time-icon" 
+                      width="12" 
+                      height="12" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    <span>{timeDisplay.startTime}</span>
+                  </div>
+                  <div className="cal7-event-card__time-to">
                     <span>to</span>
                   </div>
                   <div className="cal7-event-card__time-end">
-                    {timeDisplay.endTime}
+                    <span>{timeDisplay.endTime}</span>
                   </div>
                   <time 
                     dateTime={event.startTime.toISOString()}

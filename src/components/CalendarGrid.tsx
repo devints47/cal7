@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { WeekData, CalendarEvent } from '../types/events';
 import type { CalendarTheme } from '../types/theme';
 import { DayColumn } from './DayColumn';
@@ -36,13 +36,13 @@ export function CalendarGrid({
   const [focusedEventIndex, setFocusedEventIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Find today's index for initial focus
-  useEffect(() => {
-    const todayIndex = weekData.days.findIndex(day => day.isToday);
-    if (todayIndex !== -1) {
-      setFocusedDayIndex(todayIndex);
-    }
-  }, [weekData.days]);
+  // Remove automatic focus on today - let user navigate manually
+  // useEffect(() => {
+  //   const todayIndex = weekData.days.findIndex(day => day.isToday);
+  //   if (todayIndex !== -1) {
+  //     setFocusedDayIndex(todayIndex);
+  //   }
+  // }, [weekData.days]);
 
   // Keyboard navigation handler
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
@@ -143,7 +143,22 @@ export function CalendarGrid({
                 {day.dayName}
               </span>
               <span className="cal7-calendar-grid__day-date">
-                {day.date.getDate()}
+                <span className="cal7-calendar-grid__day-month">
+                  {day.date.toLocaleDateString(locale, { month: 'short' })}
+                </span>
+                <span className="cal7-calendar-grid__day-number">
+                  {day.date.getDate()}
+                  {(() => {
+                    const dayNum = day.date.getDate();
+                    if (dayNum >= 11 && dayNum <= 13) return 'th';
+                    switch (dayNum % 10) {
+                      case 1: return 'st';
+                      case 2: return 'nd';
+                      case 3: return 'rd';
+                      default: return 'th';
+                    }
+                  })()}
+                </span>
               </span>
             </div>
           </div>

@@ -134,14 +134,19 @@ export function EventModal({
 
   // Make emails and links clickable in text - Fix HTML parsing
   const makeLinksClickable = (text: string): string => {
+    // Clean up malformed HTML first - fix examples like "https://www.novelteaorlando.com/contact" target="_blank">https://www.novelteaorlando.com/contact
+    const cleanedText = text
+      .replace(/([^">\s]+)"\s*target="_blank">\s*([^<,]+)/g, '$2') // Fix malformed link syntax
+      .replace(/,\s*email us at\s+([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"\s*target="_blank">([^<,]+)/g, ', email us at $1'); // Fix email syntax
+    
     // Email regex
     const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
     // URL regex - improved to handle more cases
     const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
     
-    return text
-      .replace(emailRegex, '<a href="mailto:$1" style="color: var(--cal7-color-primary, #3b82f6); text-decoration: underline;">$1</a>')
-      .replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--cal7-color-primary, #3b82f6); text-decoration: underline;">$1</a>');
+    return cleanedText
+      .replace(emailRegex, '<a href="mailto:$1" style="color: var(--cal7-color-primary, #2563eb); text-decoration: none;">$1</a>')
+      .replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--cal7-color-primary, #2563eb); text-decoration: none;">$1</a>');
   };
 
   // Open device-appropriate map app
@@ -210,14 +215,15 @@ export function EventModal({
         aria-describedby="cal7-modal-description"
         tabIndex={-1}
         style={{
-          backgroundColor: 'white',
+          backgroundColor: 'var(--cal7-color-background, #ffffff)',
           borderRadius: '0.5rem',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          boxShadow: 'var(--cal7-shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
           maxWidth: '42rem',
           width: '100%',
           maxHeight: '90vh',
           overflow: 'auto',
           outline: 'none',
+          fontFamily: 'var(--cal7-font-family, "Playfair Display", serif)',
         }}
       >
         {/* Modal Header */}
@@ -228,8 +234,8 @@ export function EventModal({
             alignItems: 'flex-start',
             justifyContent: 'space-between',
             padding: '1.5rem',
-            borderBottom: '1px solid #e5e7eb',
-            backgroundColor: '#fefdf8',
+            borderBottom: '1px solid var(--cal7-color-border, #cbd5e1)',
+            backgroundColor: 'var(--cal7-color-surface, #f8fafc)',
           }}
         >
           <div style={{ flex: 1, paddingRight: '1rem' }}>
@@ -238,7 +244,7 @@ export function EventModal({
               style={{
                 fontSize: '1.875rem',
                 fontWeight: '600',
-                color: '#374151',
+                color: 'var(--cal7-color-text, #1e293b)',
                 lineHeight: '1.25',
                 margin: 0,
               }}
@@ -250,8 +256,8 @@ export function EventModal({
                 style={{
                   display: 'inline-block',
                   marginTop: '0.5rem',
-                  backgroundColor: '#fef3c7',
-                  color: '#92400e',
+                  backgroundColor: 'var(--cal7-color-today-background, #dbeafe)',
+                  color: 'var(--cal7-color-today, #1d4ed8)',
                   fontSize: '0.875rem',
                   padding: '0.25rem 0.75rem',
                   borderRadius: '9999px',

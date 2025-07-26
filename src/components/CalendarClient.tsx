@@ -33,6 +33,7 @@ export function CalendarClient({
   locale = 'en-US',
   timeZone = 'UTC',
   onEventClick,
+  calendarName = 'Calendar',
 }: CalendarClientProps) {
   // Get theme classes with fallback to default
   const themeClasses = useThemeClasses();
@@ -105,6 +106,7 @@ export function CalendarClient({
         weekRangeString={weekRangeString}
         className={`${themeClasses.calendar}__navigation`}
         locale={locale}
+        calendarName={calendarName}
       />
 
       {/* Calendar Grid */}

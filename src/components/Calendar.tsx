@@ -1,4 +1,4 @@
-import { fetchCalendarEvents } from '../utils/google-calendar-api';
+import { fetchCalendarData } from '../utils/google-calendar-api';
 import { CalendarClient } from './CalendarClient';
 import { CalendarError } from '../types/utils';
 import { CalendarErrorBoundary } from './CalendarErrorBoundary';
@@ -50,12 +50,14 @@ export async function Calendar({
   }
   
   if (!apiKey) {
-    const error = new CalendarError(
-      'Google Calendar API key is required. Please set the GOOGLE_CALENDAR_API_KEY environment variable.',
-      'MISSING_API_KEY'
-    );
+    const errorData = {
+      message: 'Google Calendar API key is required. Please set the GOOGLE_CALENDAR_API_KEY environment variable.',
+      code: 'MISSING_API_KEY' as const,
+      name: 'CalendarError'
+    };
     
     if (onError) {
+      const error = new CalendarError(errorData.message, errorData.code);
       onError(error);
     }
     
@@ -68,14 +70,15 @@ export async function Calendar({
             type="error"
           />
         ))}
-        <CalendarErrorState error={error} />
+        <CalendarErrorState error={errorData} />
       </div>
     );
   }
 
-  // Fetch calendar events with retry functionality
+  // Fetch calendar data with retry functionality
   let events: CalendarEvent[] = [];
-  let calendarError: CalendarError | null = null;
+  let calendarName = 'Calendar';
+  let calendarError: any = null;
 
   try {
     if (fetcher) {
@@ -89,26 +92,38 @@ export async function Calendar({
       );
     } else {
       // Use built-in secure fetcher with Next.js caching and retry
-      events = await withRetry(
-        () => fetchCalendarEventsWithCache(apiKey),
+      const calendarData = await withRetry(
+        () => fetchCalendarDataWithCache(apiKey),
         DEFAULT_RETRY_CONFIG
       );
+      events = calendarData.events;
+      calendarName = calendarData.metadata.name;
     }
   } catch (error) {
     console.error('Calendar fetch error:', error);
     
+    // Create plain object error data for client components
     if (error instanceof CalendarError) {
-      calendarError = error;
+      calendarError = {
+        message: error.message,
+        code: error.code,
+        name: 'CalendarError'
+      };
     } else {
-      calendarError = new CalendarError(
-        'Failed to load calendar events. Please try again later.',
-        'UNKNOWN_ERROR',
-        error instanceof Error ? error : undefined
-      );
+      calendarError = {
+        message: 'Failed to load calendar events. Please try again later.',
+        code: 'UNKNOWN_ERROR' as const,
+        name: 'CalendarError'
+      };
     }
     
     if (onError) {
-      onError(calendarError);
+      const actualError = new CalendarError(
+        calendarError.message,
+        calendarError.code,
+        error instanceof Error ? error : undefined
+      );
+      onError(actualError);
     }
   }
 
@@ -149,6 +164,7 @@ export async function Calendar({
             events={events}
             locale={locale}
             timeZone={timeZone}
+            calendarName={calendarName}
           />
         </CalendarErrorBoundary>
       </div>
@@ -157,23 +173,23 @@ export async function Calendar({
 }
 
 /**
- * Fetches calendar events with Next.js caching
+ * Fetches calendar data with Next.js caching
  * Uses the hardcoded public calendar ID from the service
  */
-async function fetchCalendarEventsWithCache(
+async function fetchCalendarDataWithCache(
   apiKey: string,
-): Promise<CalendarEvent[]> {
+): Promise<{ events: CalendarEvent[], metadata: { name: string } }> {
   try {
     // Use the service function which handles the calendar ID internally
-    const events = await fetchCalendarEvents(apiKey);
-    return events;
+    const calendarData = await fetchCalendarData(apiKey);
+    return calendarData;
   } catch (error) {
     if (error instanceof CalendarError) {
       throw error;
     }
     
     throw new CalendarError(
-      'Failed to fetch calendar events',
+      'Failed to fetch calendar data',
       'NETWORK_ERROR',
       error instanceof Error ? error : undefined
     );

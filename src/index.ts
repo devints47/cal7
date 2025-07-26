@@ -100,7 +100,7 @@ export { CalendarError } from './types/utils';
 
 // Utility exports
 export {
-  fetchCalendarEvents,
+  fetchCalendarData,
   transformGoogleCalendarEvent,
   validateCalendarId,
   validateApiKey,
