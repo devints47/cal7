@@ -61,7 +61,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/devints47/cal7.git"
+    "url": "git+https://github.com/devints47/cal7.git"
   },
   "bugs": {
     "url": "https://github.com/devints47/cal7/issues"
