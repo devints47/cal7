@@ -1,6 +1,6 @@
 {
   "name": "cal7",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A zero-configuration React calendar component for displaying Google Calendar events in a responsive weekly view",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -61,12 +61,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/cal7.git"
+    "url": "https://github.com/devints47/cal7.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/cal7/issues"
+    "url": "https://github.com/devints47/cal7/issues"
   },
-  "homepage": "https://github.com/yourusername/cal7#readme",
+  "homepage": "https://github.com/devints47/cal7#readme",
   "peerDependencies": {
     "next": ">=13.0.0",
     "react": ">=18.0.0",
