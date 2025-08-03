@@ -1,0 +1,75 @@
+name: Release on tag
+
+on:
+  push:
+    tags:
+      - "v*" # e.g. v1.0.1
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release (e.g., v1.0.1)"
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create release
+      id-token: write # required for npm --provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # When manually triggered, check out the specified tag; otherwise use the pushed ref
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Resolve tag/version
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=${TAG#v}" >> $GITHUB_OUTPUT
+          echo "Resolved tag: $TAG"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install
+        run: npm ci
+
+      - name: Verify package.json version matches tag
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "package.json version: $PKG_VERSION"
+          echo "tag version:        ${{ steps.vars.outputs.version }}"
+          if [ "$PKG_VERSION" != "${{ steps.vars.outputs.version }}" ]; then
+            echo "::error::package.json version ($PKG_VERSION) does not match tag (${{ steps.vars.outputs.version }})"
+            exit 1
+          fi
+
+      - name: Test (if present)
+        run: npm test --if-present
+
+      # No explicit build step needed: npm runs your `prepublishOnly` which builds cal7.
+      # Keep one if you want a pre-flight build: `npm run build:prod`
+
+      - name: Publish to npm (with provenance)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
+
+      - name: Create GitHub Release (auto notes)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: Cal7 ${{ steps.vars.outputs.tag }}
+          generate_release_notes: true
